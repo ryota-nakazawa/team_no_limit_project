@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import "./SpeechToChatGPT.css";
-import idleMovie from "../movies/man1.mp4";
-import idleImage from "../images/idlepc.png";
+import idleMovie from "../movies/output.mp4";
+import idleImage from "../images/idol1.png";
 import youImage from "../images/you.png";
 import { sendToChatGPT } from './SendingAPI'; // SendingAPIをインポート
 import { startRecognition } from './SpeechRecognition'; // SpeechRecognitionをインポート
