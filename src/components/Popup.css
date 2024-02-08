@@ -1,0 +1,49 @@
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* 半透明の黒背景 */
+  z-index: 1000;
+  /* 他の要素よりも上に表示 */
+}
+
+.popup-main {
+  position: relative;
+  margin: 50px auto;
+  /* 画面中央に表示 */
+  padding: 20px;
+  background-color: #fff;
+  width: 80%;
+  max-width: 600px;
+  /* 最大幅 */
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  /* 影の設定 */
+
+  /* 追加するスタイル */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-main video {
+  width: 100%;
+  /* ポップアップ内の幅いっぱいに動画を広げる */
+  height: auto;
+  /* 幅に合わせて自動的に高さを調整 */
+  max-width: 100%;
+  /* ポップアップの幅が動画の最大幅になるように調整 */
+  max-height: 100%;
+  /* ポップアップの高さが動画の最大高さになるように調整 */
+}
+
+.popup.display-block {
+  display: block;
+}
+
+.popup.display-none {
+  display: none;
+}
