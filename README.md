@@ -1,5 +1,8 @@
 # Team NO LIMIT アイドルプロジェクト用リポジトリ
 
+## アプリデプロイ先
+[アイドルチャットアプリ](https://team-no-limit-project.vercel.app/)
+
 ## 環境設定手順
 
 各々のPCで環境設定をして動かしてみてください。

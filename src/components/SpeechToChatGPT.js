@@ -5,7 +5,9 @@ import idleImage from "../images/idol1.png";
 import youImage from "../images/you.png";
 import { sendToChatGPT } from './SendingAPI'; // SendingAPIをインポート
 import { startRecognition } from './SpeechRecognition'; // SpeechRecognitionをインポート
+import { useNavigate } from 'react-router-dom';
 import ChatMessage from './ChatMessage'; // ChatMessageコンポーネントをインポート
+
 import {
   BsFillSendFill,
   BsStopCircle,
@@ -22,6 +24,7 @@ const SpeechToChatGPT = () => {
   const [error, setError] = useState("");
   const recognitionRef = useRef(null);
   const videoRef = useRef(null);
+  const navigate = useNavigate();
 
   // テキスト入力反映
   const handleChange = (event) => {
@@ -50,6 +53,10 @@ const SpeechToChatGPT = () => {
     handleSpeakEnd();
   };
 
+  const handleNavigation = () => {
+    navigate('/payment'); // '/payment' パスへの遷移
+  };
+
   // Chat GPTに送信する関数
   const handleSendToChatGPT = () => {
     sendToChatGPT(transcript, isSpeaking, language, videoRef, setHistory, setTranscript, setIsSpeaking, setError); // SendingAPIの関数を呼び出し
@@ -73,6 +80,7 @@ const SpeechToChatGPT = () => {
             <source src={idleMovie} type="video/mp4" />
           </video>
         </div>
+        <button onClick={handleNavigation}>決済道場へ</button>
 
         <div className="chat-container">
           <button className="clear-history" onClick={clearHistory}>
