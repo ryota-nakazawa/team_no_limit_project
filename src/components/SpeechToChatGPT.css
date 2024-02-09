@@ -217,7 +217,7 @@ button:hover {
     height: 40%;
     padding-top: 40%;
     /* 16:9のアスペクト比を維持するために必要なパディング */
-    overflow: hidden;
+    /* overflow: hidden; */
   }
 
   .video-container video {
