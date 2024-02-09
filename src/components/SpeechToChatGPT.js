@@ -59,7 +59,11 @@ const SpeechToChatGPT = () => {
 
   // Chat GPTに送信する関数
   const handleSendToChatGPT = () => {
-    sendToChatGPT(transcript, isSpeaking, language, videoRef, setHistory, setTranscript, setIsSpeaking, setError); // SendingAPIの関数を呼び出し
+    if (transcript === "決済道場入門") {
+      handleNavigation();
+    } else {
+      sendToChatGPT(transcript, isSpeaking, language, videoRef, setHistory, setTranscript, setIsSpeaking, setError); // SendingAPIの関数を呼び出し
+    }
   };
 
   // チャット履歴を消去する関数
@@ -80,7 +84,6 @@ const SpeechToChatGPT = () => {
             <source src={idleMovie} type="video/mp4" />
           </video>
         </div>
-        <button onClick={handleNavigation}>決済道場へ</button>
 
         <div className="chat-container">
           <button className="clear-history" onClick={clearHistory}>

@@ -22,22 +22,38 @@
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   /* 影の設定 */
-
-  /* 追加するスタイル */
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  /* 子要素を縦に配置 */
 }
 
-.popup-main video {
+.popup-main .popup-video {
   width: 100%;
-  /* ポップアップ内の幅いっぱいに動画を広げる */
-  height: auto;
-  /* 幅に合わせて自動的に高さを調整 */
-  max-width: 100%;
-  /* ポップアップの幅が動画の最大幅になるように調整 */
-  max-height: 100%;
-  /* ポップアップの高さが動画の最大高さになるように調整 */
+  /* 動画の幅を100%に設定 */
+}
+
+.popup-main button {
+  margin-top: 20px;
+  /* ボタンと動画の間に余白を追加 */
+  background-color: #ffffff;
+  color: #333333;
+  border: 2px solid #333333;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  align-self: flex-end;
+  writing-mode: horizontal-tb;
+  width: 100px;
+  /* 幅を変更する */
+  height: 40px;
+  /* 高さを変更する */
+}
+
+.popup-main button:hover {
+  background-color: #333333;
+  color: #ffffff;
 }
 
 .popup.display-block {

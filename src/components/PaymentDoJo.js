@@ -147,7 +147,7 @@ const PaymentDoJo = () => {
 
         {/* ポップアップ */}
         <Popup show={showPopup} handleClose={() => setShowPopup(false)}>
-          <video ref={videoRef} autoPlay controls>
+          <video id="popupVideo" ref={videoRef} autoPlay controls>
             <source src={hiddenMovie} type="video/mp4" />
           </video>
         </Popup>
