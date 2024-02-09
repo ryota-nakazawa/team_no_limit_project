@@ -9,6 +9,7 @@ import { startRecognition } from './SpeechRecognition'; // SpeechRecognitionを�
 import { useNavigate } from 'react-router-dom';
 import ChatMessage from './ChatMessage'; // ChatMessageコンポーネントをインポート
 import Popup from './Popup';
+import { IoAccessibility } from 'react-icons/io5';
 
 import {
   BsFillSendFill,
@@ -16,6 +17,8 @@ import {
   BsMic,
   BsFillMicFill,
 } from "react-icons/bs";
+
+
 
 const PaymentDoJo = () => {
   const [history, setHistory] = useState([]); // 会話の履歴を保持する状態
@@ -25,7 +28,8 @@ const PaymentDoJo = () => {
   const [transcript, setTranscript] = useState("");
   const [error, setError] = useState("");
   const recognitionRef = useRef(null);
-  const videoRef = useRef(null);
+  const videoRefBazz = useRef(null);
+  const videoRefDance = useRef(null);
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
 
@@ -45,8 +49,8 @@ const PaymentDoJo = () => {
   // 読み上げが終わった時にisSpeakingをfalseにする
   const handleSpeakEnd = () => {
     setIsSpeaking(false); // 読み上げが終了したことを示す
-    if (videoRef.current) {
-      videoRef.current.pause(); // ビデオを一時停止
+    if (videoRefBazz.current) {
+      videoRefBazz.current.pause(); // ビデオを一時停止
     }
   };
 
@@ -62,7 +66,7 @@ const PaymentDoJo = () => {
 
   // Chat GPTに送信する関数
   const handleSendToChatGPTPayment = () => {
-    sendToChatGPTPayment(transcript, isSpeaking, language, videoRef, setHistory, setTranscript, setIsSpeaking, setError); // SendingAPIの関数を呼び出し
+    sendToChatGPTPayment(transcript, isSpeaking, language, videoRefBazz, setHistory, setTranscript, setIsSpeaking, setError); // SendingAPIの関数を呼び出し
   };
 
   // チャット履歴を消去する関数
@@ -79,11 +83,10 @@ const PaymentDoJo = () => {
     <div className="container">
       <div className="video-and-chat-container">
         <div className="video-container">
-          <video id="myVideo" ref={videoRef} muted loop className="video">
+          <video id="myVideo" ref={videoRefBazz} muted loop className="video">
             <source src={idleMovie} type="video/mp4" />
           </video>
         </div>
-        <button onClick={handleNavigation}>アイドルとのチャットへ</button>
 
         <div className="chat-container">
           <button className="clear-history" onClick={clearHistory}>
@@ -102,6 +105,9 @@ const PaymentDoJo = () => {
       </div>
 
       <div className="transcript-and-send-container">
+        <div>
+          <button onClick={handleNavigation}>Back</button>
+        </div>
         <div className="language">
           <button
             className={`language-btn ${language === "ja-JP" ? "selected" : ""}`}
@@ -143,11 +149,11 @@ const PaymentDoJo = () => {
           </button>
         )}
         {/* ボタンをクリックしてポップアップを表示 */}
-        <button className="popup-btn" onClick={() => setShowPopup(true)}>ポップアップを表示</button>
+        <button className="popup-btn" onClick={() => setShowPopup(true)}><IoAccessibility className="icon" /></button>
 
         {/* ポップアップ */}
         <Popup show={showPopup} handleClose={() => setShowPopup(false)}>
-          <video id="popupVideo" ref={videoRef} autoPlay controls>
+          <video id="popupVideo" ref={videoRefDance} autoPlay controls>
             <source src={hiddenMovie} type="video/mp4" />
           </video>
         </Popup>

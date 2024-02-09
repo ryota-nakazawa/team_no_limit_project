@@ -38,16 +38,16 @@
   background-color: #ffffff;
   color: #333333;
   border: 2px solid #333333;
-  padding: 4px 10px;
+  padding: 4px 4px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s, color 0.3s, border-color 0.3s;
   align-self: flex-end;
   writing-mode: horizontal-tb;
-  width: 100px;
+  width: 10%;
   /* 幅を変更する */
-  height: 40px;
+  height: 10%;
   /* 高さを変更する */
 }
 
