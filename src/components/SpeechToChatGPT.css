@@ -69,6 +69,7 @@ body {
   margin: 260px auto 120px;
   background-color: #ffffff;
   border-radius: 10px;
+  overflow-y: auto;
 }
 
 .clear-history {
