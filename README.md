@@ -36,4 +36,5 @@ REACT_APP_OPENAI_API_KEY="Your API KEY"
 $ npm start
 
 ※ 他にも不足事項あれば記載よろ
+
 ※ モバイルは現状、Androidのみ対応可能
