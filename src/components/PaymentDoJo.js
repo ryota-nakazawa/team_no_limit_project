@@ -37,6 +37,7 @@ const PaymentDoJo = () => {
   const isPc = useMedia('(min-width: 960px)');
   const isTablet = useMedia('(min-width: 520px) and (max-width: 959px)');
   const isMobile = useMedia('(max-width: 519px)');
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
 
   // テキスト入力反映
   const handleChange = (event) => {
@@ -71,7 +72,15 @@ const PaymentDoJo = () => {
 
   // Chat GPTに送信する関数
   const handleSendToChatGPTPayment = () => {
-    sendToChatGPTPayment(transcript, isSpeaking, language, videoRefBazz, setHistory, setTranscript, setIsSpeaking, setError); // SendingAPIの関数を呼び出し
+    setIsSendingMessage(true); // メッセージ送信中の状態をtrueに設定
+    sendToChatGPTPayment(transcript, isSpeaking, language, videoRefBazz, setHistory, setTranscript, setIsSpeaking, setError)
+      .then(() => {
+        setIsSendingMessage(false); // メッセージ送信が完了したら状態をfalseに設定
+      })
+      .catch((error) => {
+        setError(error);
+        setIsSendingMessage(false); // エラーが発生した場合も状態をfalseに設定
+      });
   };
 
   // チャット履歴を消去する関数
@@ -178,7 +187,7 @@ const PaymentDoJo = () => {
             <BsStopCircle className="icon-large" />
           </button>
         ) : (
-          <button className="send-btn" onClick={handleSendToChatGPTPayment}>
+          <button className="send-btn" onClick={handleSendToChatGPTPayment} disabled={isSendingMessage}>
             <BsFillSendFill className="icon" />
           </button>
         )}

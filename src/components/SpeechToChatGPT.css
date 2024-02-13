@@ -11,6 +11,7 @@ body {
   background-color: #f2f3f5;
   color: #333;
   overflow: hidden;
+  overflow-y: auto;
 }
 
 .container {
@@ -58,8 +59,11 @@ body {
 }
 
 .chat-container {
+  flex-grow: 1;
+  flex-direction: column;
+  /* 縦方向にメッセージを配置 */
   position: relative;
-  height: calc(100vh - 330px);
+  /* height: 100vh; */
   padding: 5px;
   max-width: 1300px;
   margin: 260px auto 120px;
@@ -113,6 +117,7 @@ body {
   border-radius: 8px;
   background-color: #fff;
   text-align: left;
+  align-self: flex-start;
 }
 
 .user-message {

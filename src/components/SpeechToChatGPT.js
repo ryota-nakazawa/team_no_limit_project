@@ -27,6 +27,7 @@ const SpeechToChatGPT = () => {
   const videoRef = useRef(null);
   const navigate = useNavigate();
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
 
   useEffect(() => {
     // 初回レンダリング時にアニメーションを無効にする
@@ -69,10 +70,19 @@ const SpeechToChatGPT = () => {
 
   // Chat GPTに送信する関数
   const handleSendToChatGPT = () => {
+    setIsSendingMessage(true); // メッセージ送信中の状態をtrueに設定
+
     if (transcript === "bazz") {
       handleNavigation();
     } else {
-      sendToChatGPT(transcript, isSpeaking, language, videoRef, setHistory, setTranscript, setIsSpeaking, setError); // SendingAPIの関数を呼び出し
+      sendToChatGPT(transcript, isSpeaking, language, videoRef, setHistory, setTranscript, setIsSpeaking, setError)
+        .then(() => {
+          setIsSendingMessage(false); // メッセージ送信が完了したら状態をfalseに設定
+        })
+        .catch((error) => {
+          setError(error);
+          setIsSendingMessage(false); // エラーが発生した場合も状態をfalseに設定
+        });
     }
   };
 
@@ -147,7 +157,7 @@ const SpeechToChatGPT = () => {
             <BsStopCircle className="icon-large" />
           </button>
         ) : (
-          <button className="send-btn" onClick={handleSendToChatGPT}>
+          <button className="send-btn" onClick={handleSendToChatGPT} disabled={isSendingMessage}>
             <BsFillSendFill className="icon" />
           </button>
         )}
