@@ -59,11 +59,11 @@ body {
 }
 
 .chat-container {
-  flex-grow: 1;
-  flex-direction: column;
+  /* flex-grow: 1;
+  flex-direction: column; */
   /* 縦方向にメッセージを配置 */
   position: relative;
-  /* height: 100vh; */
+  height: 100vh;
   padding: 5px;
   max-width: 1300px;
   margin: 260px auto 120px;
