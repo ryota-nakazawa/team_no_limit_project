@@ -12,7 +12,7 @@
 
 .popup-main {
   position: relative;
-  margin: 50px auto;
+  margin: 20px auto;
   /* 画面中央に表示 */
   padding: 20px;
   background-color: #fff;
@@ -33,7 +33,7 @@
 }
 
 .popup-main button {
-  margin-top: 20px;
+  margin-top: 10px;
   /* ボタンと動画の間に余白を追加 */
   background-color: #ffffff;
   color: #333333;
@@ -41,7 +41,7 @@
   padding: 4px 4px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 5%;
   transition: background-color 0.3s, color 0.3s, border-color 0.3s;
   align-self: flex-end;
   writing-mode: horizontal-tb;

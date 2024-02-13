@@ -21,7 +21,7 @@ export const Popup = ({ handleClose, show, children }) => {
     <div className={showHideClassName}>
       <section className="popup-main">
         {children}
-        <button onClick={handleClose}>閉じる</button>
+        <button onClick={handleClose}>❌</button>
       </section>
 
     </div>

@@ -10,7 +10,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<SpeechToChatGPT />} />
-        <Route path="/payment" element={<PaymentDoJo />} /> {/* 決済道場へのルートを追加 */}
+        <Route path="/payment" element={<PaymentDoJo />} />
       </Routes>
     </BrowserRouter>
   );

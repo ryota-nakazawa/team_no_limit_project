@@ -11,6 +11,7 @@ import ChatMessage from './ChatMessage'; // ChatMessageコンポーネントを�
 import Popup from './Popup';
 import { IoAccessibility } from 'react-icons/io5';
 import { motion } from "framer-motion";
+import useMedia from 'use-media';
 
 import {
   BsFillSendFill,
@@ -33,6 +34,9 @@ const PaymentDoJo = () => {
   const videoRefDance = useRef(null);
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+  const isPc = useMedia('(min-width: 960px)');
+  const isTablet = useMedia('(min-width: 520px) and (max-width: 959px)');
+  const isMobile = useMedia('(max-width: 519px)');
 
   // テキスト入力反映
   const handleChange = (event) => {
@@ -90,9 +94,11 @@ const PaymentDoJo = () => {
     >
       <div className="video-and-chat-container">
         <div className="video-container">
+
           <video id="myVideo" ref={videoRefBazz} muted loop className="video">
             <source src={idleMovie} type="video/mp4" />
           </video>
+
         </div>
         <div className="chat-container">
           <button className="clear-history" onClick={clearHistory}>
@@ -109,6 +115,25 @@ const PaymentDoJo = () => {
           ))}
         </div>
       </div>
+
+      {/* {(isTablet || isMobile) && (
+        <div>
+          <div className="img-container"><img src={bazzImage} alt="Image" /></div>
+          <div className="chat-container">
+            <button className="clear-history" onClick={clearHistory}>
+              &times;
+            </button>
+            {history.map((message, index) => (
+              <ChatMessage
+                key={index}
+                role={message.role}
+                name={message.role === "user" ? "あなた" : "道場師範"}
+                iconUrl={message.role === "user" ? youImage : idleImage}
+                content={message.content}
+              />
+            ))}
+          </div></div>)
+      } */}
 
       <div className="transcript-and-send-container">
         <div>
@@ -132,11 +157,6 @@ const PaymentDoJo = () => {
           <textarea
             value={transcript}
             onChange={handleChange}
-          // onKeyDown={(e) => {
-          //   if (e.key === 'Enter') {
-          //     handleSendToChatGPTPayment();
-          //   }
-          // }}
           />
           <button className="clear-btn" onClick={clearTranscript}>
             ×
@@ -163,9 +183,9 @@ const PaymentDoJo = () => {
           </button>
         )}
         {/* ボタンをクリックしてポップアップを表示 */}
-        <button className="popup-btn" onClick={() => setShowPopup(true)}><IoAccessibility className="icon" /></button>
-
-        {/* ポップアップ */}
+        <button className="popup-btn" onClick={() => setShowPopup(true)}>
+          <IoAccessibility className="icon" />
+        </button>
         <Popup show={showPopup} handleClose={() => setShowPopup(false)}>
           <video id="popupVideo" ref={videoRefDance} autoPlay controls>
             <source src={hiddenMovie} type="video/mp4" />
