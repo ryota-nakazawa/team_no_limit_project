@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import ChatMessage from './ChatMessage'; // ChatMessageコンポーネントをインポート
 import Popup from './Popup';
 import { IoAccessibility } from 'react-icons/io5';
+import { motion } from "framer-motion";
 
 import {
   BsFillSendFill,
@@ -80,14 +81,19 @@ const PaymentDoJo = () => {
   };
 
   return (
-    <div className="container">
+    <motion.div
+      className="container"
+      initial={{ opacity: 0, scale: 0.5, rotate: -180 }} // 初期状態: 透明で縮小して回転
+      animate={{ opacity: 1, scale: 1, rotate: 0 }} // アニメーション後の状態: 完全に表示され、元のサイズと角度に戻る
+      exit={{ opacity: 0, scale: 0.5, rotate: 180 }} // ページ遷移時の状態: 透明で縮小して逆方向に回転
+      transition={{ duration: 1.2 }} // 0.5秒かけてアニメーションする
+    >
       <div className="video-and-chat-container">
         <div className="video-container">
           <video id="myVideo" ref={videoRefBazz} muted loop className="video">
             <source src={idleMovie} type="video/mp4" />
           </video>
         </div>
-
         <div className="chat-container">
           <button className="clear-history" onClick={clearHistory}>
             &times;
@@ -123,7 +129,15 @@ const PaymentDoJo = () => {
           </button>
         </div>
         <div className="textarea-container">
-          <textarea value={transcript} onChange={handleChange} />
+          <textarea
+            value={transcript}
+            onChange={handleChange}
+          // onKeyDown={(e) => {
+          //   if (e.key === 'Enter') {
+          //     handleSendToChatGPTPayment();
+          //   }
+          // }}
+          />
           <button className="clear-btn" onClick={clearTranscript}>
             ×
           </button>
@@ -158,7 +172,7 @@ const PaymentDoJo = () => {
           </video>
         </Popup>
       </div>
-    </div>
+    </motion.div >
   );
 };
 

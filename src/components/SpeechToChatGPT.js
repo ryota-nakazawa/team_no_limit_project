@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./SpeechToChatGPT.css";
 import idleMovie from "../movies/idol1.mp4";
 import idleImage from "../images/idol1.png";
@@ -7,6 +7,7 @@ import { sendToChatGPT } from './SendingAPI'; // SendingAPIをインポート
 import { startRecognition } from './SpeechRecognition'; // SpeechRecognitionをインポート
 import { useNavigate } from 'react-router-dom';
 import ChatMessage from './ChatMessage'; // ChatMessageコンポーネントをインポート
+import { motion } from "framer-motion";
 
 import {
   BsFillSendFill,
@@ -25,6 +26,12 @@ const SpeechToChatGPT = () => {
   const recognitionRef = useRef(null);
   const videoRef = useRef(null);
   const navigate = useNavigate();
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    // 初回レンダリング時にアニメーションを無効にする
+    setIsAnimating(false);
+  }, []);
 
   // テキスト入力反映
   const handleChange = (event) => {
@@ -54,12 +61,15 @@ const SpeechToChatGPT = () => {
   };
 
   const handleNavigation = () => {
-    navigate('/payment'); // '/payment' パスへの遷移
+    setIsAnimating(true); // アニメーションを開始
+    setTimeout(() => {
+      navigate('/payment'); // '/payment' パスへの遷移
+    }, 300); // アニメーションが完了するまでの時間
   };
 
   // Chat GPTに送信する関数
   const handleSendToChatGPT = () => {
-    if (transcript === "決済道場入門") {
+    if (transcript === "bazz") {
       handleNavigation();
     } else {
       sendToChatGPT(transcript, isSpeaking, language, videoRef, setHistory, setTranscript, setIsSpeaking, setError); // SendingAPIの関数を呼び出し
