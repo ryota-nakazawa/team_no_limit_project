@@ -111,6 +111,7 @@ const PaymentDoJo = () => {
     sendToChatGPTPayment(
       transcript,
       isSpeaking,
+      isVoiceEnable,
       language,
       videoRefBazz,
       setHistory,
