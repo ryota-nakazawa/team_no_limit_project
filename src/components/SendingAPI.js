@@ -1,7 +1,7 @@
 // Chat GPTに送信する関数
 import speak from "./Speak"; // Speak.js をインポート
 
-const OPENAI_API_KEY = "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";
+const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
 const OPENAI_API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 
 export const sendToChatGPT = async (
