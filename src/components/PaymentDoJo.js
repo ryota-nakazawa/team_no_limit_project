@@ -108,6 +108,9 @@ const PaymentDoJo = () => {
 
   // Chat GPTに送信する関数
   const handleSendToChatGPTPayment = () => {
+    if (isSendingMessage === true) {
+      return;//エンター連打でクエリが発行されないように制御
+    }
     setIsSendingMessage(true); // メッセージ送信中の状態をtrueに設定
     sendToChatGPTPayment(
       transcript,
@@ -192,7 +195,7 @@ const PaymentDoJo = () => {
         <div className="transcript-and-send-container">
           <div className="textarea-with-icon">
             <div>
-              <button onClick={handleNavigation}>Back</button>
+              <button disabled={isSendingMessage || isSpeaking || isRecording} onClick={handleNavigation}>Back</button>
             </div>
             <div className="textarea-container">
               <textarea

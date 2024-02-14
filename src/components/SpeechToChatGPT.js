@@ -114,6 +114,9 @@ const SpeechToChatGPT = () => {
 
   // Chat GPTに送信する関数
   const handleSendToChatGPT = () => {
+    if (isSendingMessage === true) {
+      return;
+    }
     setIsSendingMessage(true); // メッセージ送信中の状態をtrueに設定
 
     if (transcript === "bazz") {
