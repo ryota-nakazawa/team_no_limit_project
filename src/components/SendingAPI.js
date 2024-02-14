@@ -1,11 +1,20 @@
 // Chat GPTに送信する関数
-import speak from './Speak'; // Speak.js をインポート
+import speak from "./Speak"; // Speak.js をインポート
 
-const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
+const OPENAI_API_KEY = "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";
 const OPENAI_API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 
-export const sendToChatGPT = async (transcript, isSpeaking, language, videoRef, setHistory, setTranscript, setIsSpeaking, setError) => {
-
+export const sendToChatGPT = async (
+  transcript,
+  isSpeaking,
+  isVoiceEnabled,
+  language,
+  videoRef,
+  setHistory,
+  setTranscript,
+  setIsSpeaking,
+  setError
+) => {
   if (!transcript.trim()) {
     setError("Please say something to send.");
     return;
@@ -14,7 +23,6 @@ export const sendToChatGPT = async (transcript, isSpeaking, language, videoRef, 
     ...prevHistory,
     { role: "user", content: transcript },
   ]);
-
 
   const requestData = {
     model: "gpt-3.5-turbo",
@@ -50,7 +58,14 @@ export const sendToChatGPT = async (transcript, isSpeaking, language, videoRef, 
       ]);
       setTranscript("");
       setIsSpeaking(true);
-      speak(responseText, isSpeaking, language, videoRef, setIsSpeaking); // GPTからの返答を読み上げる関数
+      speak(
+        responseText,
+        isSpeaking,
+        isVoiceEnabled,
+        language,
+        videoRef,
+        setIsSpeaking
+      ); // GPTからの返答を読み上げる関数
     } else {
       console.error("Error sending to ChatGPT:", response.statusText);
     }
