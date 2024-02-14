@@ -23,6 +23,9 @@ export const speakPayment = (
         videoRef.current.pause(); // ビデオを一時停止
       }
     };
+  } else {
+    // isVoiceEnabledがfalseの場合、即座にisSpeakingをfalseに設定する
+    setIsSpeaking(false); // ここで直接isSpeakingをfalseに設定
   }
 };
 
