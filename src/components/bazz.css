@@ -11,3 +11,13 @@
   /* 画像を中央に配置 */
   color: #333;
 }
+
+.chat-history-container-bazz {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding: 20px;
+  background-color: rgba(244, 244, 244, 0.4);
+  border: 3px solid #ccc;
+  /* 外枠線を追加 */
+  border-radius: 10%;
+}

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./SpeechToChatGPT.css";
 import "./bazz.css";
-import idleMovie from "../movies/bazz.mp4";
+import idleMovie from "../movies/bazz1.mp4";
 import hiddenMovie from "../movies/bazzdance.mp4";
 import { sendToChatGPTPayment } from "./SendingAPIPayment"; // SendingAPIをインポート
 import { startRecognition } from "./SpeechRecognition"; // SpeechRecognitionをインポート
@@ -179,7 +179,7 @@ const PaymentDoJo = () => {
       </div> */}
 
       <div className="chat-container">
-        <div className="chat-history-container" ref={chatHistoryRef}>
+        <div className="chat-history-container-bazz" ref={chatHistoryRef}>
           {history.map((message, index) => (
             <ChatMessage
               key={index}
