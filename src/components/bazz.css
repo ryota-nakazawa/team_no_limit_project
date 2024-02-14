@@ -1,0 +1,13 @@
+.container-bazz {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-image: url('../images/temple.jpg');
+  background-size: cover;
+  /* 画像を要素に合わせて表示 */
+  background-position: center;
+  /* 画像を中央に配置 */
+  color: #333;
+}

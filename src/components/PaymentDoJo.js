@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./SpeechToChatGPT.css";
+import "./bazz.css";
 import idleMovie from "../movies/bazz.mp4";
 import hiddenMovie from "../movies/bazzdance.mp4";
 import { sendToChatGPTPayment } from "./SendingAPIPayment"; // SendingAPIをインポート
@@ -111,7 +112,7 @@ const PaymentDoJo = () => {
     sendToChatGPTPayment(
       transcript,
       isSpeaking,
-      isVoiceEnable,
+      isVoiceEnabled,
       language,
       videoRefBazz,
       setHistory,
@@ -140,7 +141,7 @@ const PaymentDoJo = () => {
 
   return (
     <motion.div
-      className="container"
+      className="container-bazz"
       initial={{ opacity: 0, scale: 0.5, rotate: -180 }} // 初期状態: 透明で縮小して回転
       animate={{ opacity: 1, scale: 1, rotate: 0 }} // アニメーション後の状態: 完全に表示され、元のサイズと角度に戻る
       exit={{ opacity: 0, scale: 0.5, rotate: 180 }} // ページ遷移時の状態: 透明で縮小して逆方向に回転
@@ -192,24 +193,6 @@ const PaymentDoJo = () => {
           <div className="textarea-with-icon">
             <div>
               <button onClick={handleNavigation}>Back</button>
-            </div>
-            <div className="language">
-              <button
-                className={`language-btn ${
-                  language === "ja-JP" ? "selected" : ""
-                }`}
-                onClick={() => setLanguage("ja-JP")}
-              >
-                日
-              </button>
-              <button
-                className={`language-btn ${
-                  language === "en-US" ? "selected" : ""
-                }`}
-                onClick={() => setLanguage("en-US")}
-              >
-                英
-              </button>
             </div>
             <div className="textarea-container">
               <textarea
