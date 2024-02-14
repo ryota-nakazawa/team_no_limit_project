@@ -152,25 +152,25 @@ const SpeechToChatGPT = () => {
 
   return (
     <div className="container">
-      <div class="sidebar">
-        <div class="sidebar-menu">
-          <div class="menu-item active">
+      <div className="sidebar">
+        <div className="sidebar-menu">
+          <div className="menu-item active">
             <TbMessageLanguage className="sidebar-icon" />
             英会話
           </div>
-          <div class="menu-item">
+          <div className="menu-item">
             <TbMessages className="sidebar-icon" />
             雑談
           </div>
-          <div class="menu-item">
+          <div className="menu-item">
             <PiTranslateBold className="sidebar-icon" />
             日英翻訳
           </div>
-          <div class="menu-item">
+          <div className="menu-item">
             <TbTextSpellcheck className="sidebar-icon" />
             英文校正
           </div>
-          <div class="menu-item">
+          <div className="menu-item">
             <TbMusic className="sidebar-icon" />
             ダンス
           </div>
