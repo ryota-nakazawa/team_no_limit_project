@@ -108,7 +108,7 @@ const SpeechToChatGPT = () => {
   const handleKeyDown = (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault(); // デフォルトのエンターキーの動作（改行）を防止
-      sendToChatGPT(); // チャット送信関数を呼び出す
+      handleSendToChatGPT(); // チャット送信関数を呼び出す
     }
   };
 
