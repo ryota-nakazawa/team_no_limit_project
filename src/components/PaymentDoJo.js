@@ -248,7 +248,7 @@ const PaymentDoJo = () => {
             </button>
           )}
           {/* ボタンをクリックしてポップアップを表示 */}
-          <button className="popup-btn" onClick={() => setShowPopup(true)}>
+          <button disabled={isSendingMessage || isSpeaking || isRecording} className="popup-btn" onClick={() => setShowPopup(true)}>
             <IoAccessibility className="icon" />
           </button>
           <Popup show={showPopup} handleClose={() => setShowPopup(false)}>
