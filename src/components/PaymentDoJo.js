@@ -5,7 +5,7 @@ import idleMovie from "../movies/bazz1.mp4";
 import hiddenMovie from "../movies/bazzdance.mp4";
 import { sendToChatGPTPayment } from "./SendingAPIPayment"; // SendingAPIをインポート
 import { startRecognition } from "./SpeechRecognition"; // SpeechRecognitionをインポート
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import ChatMessage from "./ChatMessage"; // ChatMessageコンポーネントをインポート
 import Popup from "./Popup";
 import { IoAccessibility } from "react-icons/io5";
@@ -39,6 +39,7 @@ const PaymentDoJo = () => {
   const isTablet = useMedia("(min-width: 520px) and (max-width: 959px)");
   const isMobile = useMedia("(max-width: 519px)");
   const [isSendingMessage, setIsSendingMessage] = useState(false);
+  const location = useLocation();
 
   // chatの一番下に自動でスクロールする
   useEffect(() => {
@@ -46,6 +47,12 @@ const PaymentDoJo = () => {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
   }, [history]); // historyが更新されるたびに実行
+
+  useEffect(() => {
+    if (!location.state || !location.state.message || !location.state.type) {
+      handleNavigation(); // stateがない場合やmessage/typeが欠けている場合はルートにリダイレクト
+    }
+  }, []);
 
   // テキスト入力反映
   const handleChange = (event) => {

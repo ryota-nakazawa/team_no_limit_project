@@ -100,7 +100,7 @@ const SpeechToChatGPT = () => {
   const handleNavigation = () => {
     setIsAnimating(true); // アニメーションを開始
     setTimeout(() => {
-      navigate("/payment"); // '/payment' パスへの遷移
+      navigate("/payment", { state: { message: '成功', type: 'success' } }); // '/payment' パスへの遷移
     }, 300); // アニメーションが完了するまでの時間
   };
 
