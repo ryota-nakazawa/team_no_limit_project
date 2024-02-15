@@ -37,6 +37,7 @@ const SpeechToChatGPT = () => {
   const navigate = useNavigate();
   const [isAnimating, setIsAnimating] = useState(false);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
+  const [isIMEActive, setIsIMEActive] = useState(false);
 
   useEffect(() => {
     // 初回レンダリング時にアニメーションを無効にする
@@ -50,9 +51,28 @@ const SpeechToChatGPT = () => {
     }
   }, [history]); // historyが更新されるたびに実行
 
+  //テキストの入力が編集中がどうかを判断する
+  useEffect(() => {
+    document.addEventListener('compositionstart', handleCompositionStart);
+    document.addEventListener('compositionend', handleCompositionEnd);
+
+    return () => {
+      document.removeEventListener('compositionstart', handleCompositionStart);
+      document.removeEventListener('compositionend', handleCompositionEnd);
+    };
+  }, []);
+
   // テキスト入力反映
   const handleChange = (event) => {
     setTranscript(event.target.value); // テキスト入力の変更をtranscriptに設定
+  };
+
+  const handleCompositionStart = () => {
+    setIsIMEActive(true);
+  };
+
+  const handleCompositionEnd = () => {
+    setIsIMEActive(false);
   };
 
   // テキストエリアをリサイズする関数
@@ -106,7 +126,7 @@ const SpeechToChatGPT = () => {
 
   // エンターキーが押され、Shiftキーが押されていない場合に送信する
   const handleKeyDown = (event) => {
-    if (event.key === "Enter" && !event.shiftKey) {
+    if (event.key === "Enter" && !event.shiftKey && !isIMEActive) {
       event.preventDefault(); // デフォルトのエンターキーの動作（改行）を防止
       handleSendToChatGPT(); // チャット送信関数を呼び出す
     }

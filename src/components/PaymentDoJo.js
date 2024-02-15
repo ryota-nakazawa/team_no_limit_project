@@ -40,6 +40,7 @@ const PaymentDoJo = () => {
   const isMobile = useMedia("(max-width: 519px)");
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const location = useLocation();
+  const [isIMEActive, setIsIMEActive] = useState(false);
 
   // chatの一番下に自動でスクロールする
   useEffect(() => {
@@ -54,9 +55,28 @@ const PaymentDoJo = () => {
     }
   }, []);
 
+  //テキストの入力が編集中がどうかを判断する
+  useEffect(() => {
+    document.addEventListener('compositionstart', handleCompositionStart);
+    document.addEventListener('compositionend', handleCompositionEnd);
+
+    return () => {
+      document.removeEventListener('compositionstart', handleCompositionStart);
+      document.removeEventListener('compositionend', handleCompositionEnd);
+    };
+  }, []);
+
   // テキスト入力反映
   const handleChange = (event) => {
     setTranscript(event.target.value); // テキスト入力の変更をtranscriptに設定
+  };
+
+  const handleCompositionStart = () => {
+    setIsIMEActive(true);
+  };
+
+  const handleCompositionEnd = () => {
+    setIsIMEActive(false);
   };
 
   // テキストエリアをリサイズする関数
@@ -107,7 +127,7 @@ const PaymentDoJo = () => {
 
   // エンターキーが押され、Shiftキーが押されていない場合に送信する
   const handleKeyDown = (event) => {
-    if (event.key === "Enter" && !event.shiftKey) {
+    if (event.key === "Enter" && !event.shiftKey && !isIMEActive) {
       event.preventDefault(); // デフォルトのエンターキーの動作（改行）を防止
       handleSendToChatGPTPayment(); // チャット送信関数を呼び出す
     }
