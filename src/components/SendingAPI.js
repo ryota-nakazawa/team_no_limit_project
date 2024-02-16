@@ -10,7 +10,7 @@ export const sendToChatGPT = async (
   isVoiceEnabled,
   language,
   videoRef,
-  selectedTopic,
+  selectedMenuItem,
   setHistory,
   setTranscript,
   setIsSpeaking,
@@ -26,7 +26,7 @@ export const sendToChatGPT = async (
   ]);
 
   let systemMessage = "You are a helpful assistant.";
-  switch (selectedTopic) {
+  switch (selectedMenuItem) {
     case "englishConversation":
       systemMessage =
         "You are a helpful assistant that provides conversation tips.";
