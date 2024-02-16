@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./SpeechToChatGPT.css";
-import idleMovie from "../movies/idol1.mp4";
+import idleMovie from "../movies/idol2.mp4";
 import { sendToChatGPT } from "./SendingAPI"; // SendingAPIをインポート
 import { startRecognition } from "./SpeechRecognition"; // SpeechRecognitionをインポート
 import { useNavigate } from "react-router-dom";
@@ -32,7 +32,7 @@ const SpeechToChatGPT = () => {
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [selectedMenuItem, setSelectedMenuItem] = useState(
     "englishConversation"
-  );
+  ); // デフォルトトピックを設定
   const [error, setError] = useState("");
   const recognitionRef = useRef(null);
   const videoRef = useRef(null);
@@ -56,16 +56,16 @@ const SpeechToChatGPT = () => {
 
   //テキストの入力が編集中がどうかを判断する
   useEffect(() => {
-    document.addEventListener('compositionstart', handleCompositionStart);
-    document.addEventListener('compositionend', handleCompositionEnd);
+    document.addEventListener("compositionstart", handleCompositionStart);
+    document.addEventListener("compositionend", handleCompositionEnd);
 
     return () => {
-      document.removeEventListener('compositionstart', handleCompositionStart);
-      document.removeEventListener('compositionend', handleCompositionEnd);
+      document.removeEventListener("compositionstart", handleCompositionStart);
+      document.removeEventListener("compositionend", handleCompositionEnd);
     };
   }, []);
 
-    // 音声言語選択肢
+  // 音声言語選択肢
   const languageSettings = {
     englishConversation: "en-US",
     conversation: "ja-JP",
@@ -96,7 +96,7 @@ const SpeechToChatGPT = () => {
       ]);
     }
   };
-  
+
   // テキスト入力反映
   const handleChange = (event) => {
     setTranscript(event.target.value); // テキスト入力の変更をtranscriptに設定
@@ -156,7 +156,7 @@ const SpeechToChatGPT = () => {
   const handleNavigation = () => {
     setIsAnimating(true); // アニメーションを開始
     setTimeout(() => {
-      navigate("/payment", { state: { message: '成功', type: 'success' } }); // '/payment' パスへの遷移
+      navigate("/payment", { state: { message: "成功", type: "success" } }); // '/payment' パスへの遷移
     }, 300); // アニメーションが完了するまでの時間
   };
 
@@ -184,6 +184,7 @@ const SpeechToChatGPT = () => {
         isVoiceEnabled,
         language,
         videoRef,
+        selectedMenuItem,
         setHistory,
         setTranscript,
         setIsSpeaking,
