@@ -30,6 +30,9 @@ const SpeechToChatGPT = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
+  const [selectedMenuItem, setSelectedMenuItem] = useState(
+    "englishConversation"
+  );
   const [error, setError] = useState("");
   const recognitionRef = useRef(null);
   const videoRef = useRef(null);
@@ -62,6 +65,38 @@ const SpeechToChatGPT = () => {
     };
   }, []);
 
+    // 音声言語選択肢
+  const languageSettings = {
+    englishConversation: "en-US",
+    conversation: "ja-JP",
+    translation: "en-US",
+    grammar: "en-US",
+  };
+
+  // モードごとの説明を定義
+  const modeDescriptions = {
+    englishConversation: "英会話モードの説明",
+    conversation: "雑談モードの説明",
+    translation: "日英翻訳モードの説明",
+    grammar: "英文校正モードの説明",
+  };
+
+  // モード変更時（スクリプト変更、音声言語設定変更）
+  const handleMenuItemClick = (item) => {
+    setSelectedMenuItem(item);
+    setLanguage(languageSettings[item]); // 言語設定を更新
+    setHistory([]); // 会話の履歴クリア
+    setTranscript("");
+    // モードの説明をチャット履歴に追加
+    const description = modeDescriptions[item];
+    if (item !== "dance") {
+      setHistory((prevHistory) => [
+        ...prevHistory,
+        { role: "assistant", content: description },
+      ]);
+    }
+  };
+  
   // テキスト入力反映
   const handleChange = (event) => {
     setTranscript(event.target.value); // テキスト入力の変更をtranscriptに設定
@@ -78,16 +113,17 @@ const SpeechToChatGPT = () => {
   // テキストエリアをリサイズする関数
   const resizeTextarea = (event) => {
     const textarea = event.target;
-    const MAX_ROWS = 4;
-
-    // 一時的にheightをautoにしてscrollHeightを取得
-    textarea.style.height = "auto";
     const lineHeight = parseInt(getComputedStyle(textarea).lineHeight, 10);
-    const rows = Math.min(textarea.value.split("\n").length, MAX_ROWS);
-    const newHeight = lineHeight * rows;
+    const minRows = 1;
+    const maxRows = 6;
 
-    // 新しい高さを設定
-    textarea.style.height = `${newHeight}px`;
+    textarea.style.height = "auto";
+    const rows = Math.min(
+      Math.max(textarea.scrollHeight / lineHeight, minRows),
+      maxRows
+    );
+
+    textarea.style.height = `${Math.max(rows, minRows) * lineHeight - 10}px`;
   };
 
   // 音声入力停止
@@ -177,23 +213,48 @@ const SpeechToChatGPT = () => {
     <div className="container">
       <div className="sidebar">
         <div className="sidebar-menu">
-          <div className="menu-item active">
+          <div
+            className={`menu-item ${
+              selectedMenuItem === "englishConversation" ? "active" : ""
+            }`}
+            onClick={() => handleMenuItemClick("englishConversation")}
+          >
             <TbMessageLanguage className="sidebar-icon" />
             英会話
           </div>
-          <div className="menu-item">
+          <div
+            className={`menu-item ${
+              selectedMenuItem === "conversation" ? "active" : ""
+            }`}
+            onClick={() => handleMenuItemClick("conversation")}
+          >
             <TbMessages className="sidebar-icon" />
             雑談
           </div>
-          <div className="menu-item">
+          <div
+            className={`menu-item ${
+              selectedMenuItem === "translation" ? "active" : ""
+            }`}
+            onClick={() => handleMenuItemClick("translation")}
+          >
             <PiTranslateBold className="sidebar-icon" />
             日英翻訳
           </div>
-          <div className="menu-item">
+          <div
+            className={`menu-item ${
+              selectedMenuItem === "grammar" ? "active" : ""
+            }`}
+            onClick={() => handleMenuItemClick("grammar")}
+          >
             <TbTextSpellcheck className="sidebar-icon" />
             英文校正
           </div>
-          <div className="menu-item">
+          <div
+            className={`menu-item ${
+              selectedMenuItem === "dance" ? "active" : ""
+            }`}
+            onClick={() => handleMenuItemClick("dance")}
+          >
             <TbMusic className="sidebar-icon" />
             ダンス
           </div>
