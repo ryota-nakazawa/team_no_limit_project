@@ -1,7 +1,7 @@
 // Chat GPTに送信する関数
 import speak from "./Speak"; // Speak.js をインポート
 
-const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
+const OPENAI_API_KEY = "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";
 const OPENAI_API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 
 export const sendToChatGPT = async (
@@ -10,6 +10,7 @@ export const sendToChatGPT = async (
   isVoiceEnabled,
   language,
   videoRef,
+  selectedTopic,
   setHistory,
   setTranscript,
   setIsSpeaking,
@@ -24,13 +25,33 @@ export const sendToChatGPT = async (
     { role: "user", content: transcript },
   ]);
 
+  let systemMessage = "You are a helpful assistant.";
+  switch (selectedTopic) {
+    case "englishConversation":
+      systemMessage =
+        "You are a helpful assistant that provides conversation tips.";
+      break;
+    case "conversation":
+      systemMessage =
+        "You are a helpful assistant that provides entertaining chitchat.";
+      break;
+    case "translation":
+      systemMessage =
+        "You are a helpful assistant that provides Japanese to English translations.";
+      break;
+    case "grammar":
+      systemMessage =
+        "You are a helpful assistant that provides grammar corrections.";
+      break;
+  }
+
   const requestData = {
     model: "gpt-3.5-turbo",
     max_tokens: 128,
     messages: [
       {
         role: "system",
-        content: "You are a helpful assistant.",
+        content: systemMessage,
       },
       {
         role: "user",
