@@ -10,6 +10,7 @@ export const sendToChatGPT = async (
   isVoiceEnabled,
   language,
   videoRef,
+  selectedMenuItem,
   setHistory,
   setTranscript,
   setIsSpeaking,
@@ -24,13 +25,33 @@ export const sendToChatGPT = async (
     { role: "user", content: transcript },
   ]);
 
+  let systemMessage = "You are a helpful assistant.";
+  switch (selectedMenuItem) {
+    case "englishConversation":
+      systemMessage =
+        "ユーザーが英語の会話練習をできるようにしてください。ユーザーの入力に対して自然な英語で返答すること、会話を続けるための質問を提案すること、必要に応じて、会話のヒントや文法のアドバイスを提供するようにしてください。";
+      break;
+    case "conversation":
+      systemMessage =
+        "ユーザーが日本語でリラックスして雑談を楽しめるようにしてください。日常的な話題や興味深いテーマについての雑談を提供したり、ユーザーの感情や興味に応じて会話を調整するようにしてください。";
+      break;
+    case "translation":
+      systemMessage =
+        "ユーザーの日本語のテキストを英語に翻訳してください。ユーザーが提供した日本語のテキストを正確に英語に翻訳すること、文脈を考慮した自然な翻訳を提供するようにしてください。";
+      break;
+    case "grammar":
+      systemMessage =
+        "ユーザーが提供した英文の文法やスタイルを校正してください。文法、スペル、句読点の誤りを指摘したり、スタイルや明瞭さの向上を提案してください。";
+      break;
+  }
+
   const requestData = {
     model: "gpt-3.5-turbo",
     max_tokens: 128,
     messages: [
       {
         role: "system",
-        content: "You are a helpful assistant.",
+        content: systemMessage,
       },
       {
         role: "user",
