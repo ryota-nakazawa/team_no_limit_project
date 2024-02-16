@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./SpeechToChatGPT.css";
-import idleMovie from "../movies/idol1.mp4";
+import idleMovie from "../movies/idol2.mp4";
 import { sendToChatGPT } from "./SendingAPI"; // SendingAPIをインポート
 import { startRecognition } from "./SpeechRecognition"; // SpeechRecognitionをインポート
 import { useNavigate } from "react-router-dom";
