@@ -65,7 +65,7 @@ const SpeechToChatGPT = () => {
     };
   }, []);
 
-    // 音声言語選択肢
+  // 音声言語選択肢
   const languageSettings = {
     englishConversation: "en-US",
     conversation: "ja-JP",
@@ -184,6 +184,7 @@ const SpeechToChatGPT = () => {
         isVoiceEnabled,
         language,
         videoRef,
+        selectedMenuItem,
         setHistory,
         setTranscript,
         setIsSpeaking,
