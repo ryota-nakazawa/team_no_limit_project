@@ -26,7 +26,7 @@ import { PiTranslateBold } from "react-icons/pi";
 const SpeechToChatGPT = () => {
   const [history, setHistory] = useState([]); // 会話の履歴を保持する状態
   const [isRecording, setIsRecording] = useState(false);
-  const [language, setLanguage] = useState("ja-JP"); // デフォルトの言語を設定
+  const [language, setLanguage] = useState("en-US"); // デフォルトの言語を設定
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
@@ -37,12 +37,19 @@ const SpeechToChatGPT = () => {
   const recognitionRef = useRef(null);
   const videoRef = useRef(null);
   const chatHistoryRef = useRef(null);
+  const textareaRef = useRef(null);
   const navigate = useNavigate();
   const [isAnimating, setIsAnimating] = useState(false);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [isIMEActive, setIsIMEActive] = useState(false);
 
   useEffect(() => {
+    // デフォルトのモード説明をチャット履歴に追加
+    const defaultDescription = modeDescriptions[selectedMenuItem];
+    setHistory((prevHistory) => [
+      ...prevHistory,
+      { role: "assistant", content: defaultDescription },
+    ]);
     // 初回レンダリング時にアニメーションを無効にする
     setIsAnimating(false);
   }, []);
@@ -81,12 +88,12 @@ const SpeechToChatGPT = () => {
     grammar: "英文校正モードの説明",
   };
 
-  // モード変更時（スクリプト変更、音声言語設定変更）
+  // モード変更時
   const handleMenuItemClick = (item) => {
     setSelectedMenuItem(item);
     setLanguage(languageSettings[item]); // 言語設定を更新
-    setHistory([]); // 会話の履歴クリア
-    setTranscript("");
+    clearHistory(); // 会話の履歴クリア
+    clearTranscript(); // 入力クリア
     // モードの説明をチャット履歴に追加
     const description = modeDescriptions[item];
     if (item !== "dance") {
@@ -208,6 +215,13 @@ const SpeechToChatGPT = () => {
   // 入力を消去する関数
   const clearTranscript = () => {
     setTranscript("");
+    // テキストエリアの高さをリセット
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${
+        textareaRef.current.scrollHeight - 10
+      }px`;
+    }
   };
 
   return (
@@ -288,6 +302,7 @@ const SpeechToChatGPT = () => {
           <div className="textarea-with-icon">
             <div className="textarea-container">
               <textarea
+                ref={textareaRef}
                 rows="1"
                 value={transcript}
                 onChange={handleChange}
