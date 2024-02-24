@@ -117,7 +117,8 @@ const PaymentDoJo = () => {
 
   // GPTの返答を停止する関数
   const stopSpeaking = () => {
-    speechSynthesis.cancel(); // 読み上げをキャンセル
+    // speechSynthesis.cancel(); // 読み上げをキャンセル
+    window.globalAudio.pause();
     handleSpeakEnd();
   };
 
@@ -139,6 +140,7 @@ const PaymentDoJo = () => {
       return;//エンター連打でクエリが発行されないように制御
     }
     setIsSendingMessage(true); // メッセージ送信中の状態をtrueに設定
+    stopRecognition();
     sendToChatGPTPayment(
       transcript,
       isSpeaking,
@@ -188,26 +190,6 @@ const PaymentDoJo = () => {
         </video>
       </div>
 
-      {/* <div className="video-and-chat-container">
-        <div className="video-container">
-          <video id="myVideo" ref={videoRefBazz} muted loop className="video">
-            <source src={idleMovie} type="video/mp4" />
-          </video>
-        </div>
-        <div className="chat-container">
-          <button className="clear-history" onClick={clearHistory}>
-            &times;
-          </button>
-          {history.map((message, index) => (
-            <ChatMessage
-              key={index}
-              role={message.role}
-              content={message.content}
-            />
-          ))}
-        </div>
-      </div> */}
-
       <div className="chat-container">
         <div className="chat-history-container-bazz" ref={chatHistoryRef}>
           {history.map((message, index) => (
@@ -238,6 +220,7 @@ const PaymentDoJo = () => {
             </button>
             {!isRecording && (
               <button
+                disabled={isSendingMessage || isSpeaking}
                 className="Recording-btn start-btn"
                 onClick={() =>
                   startRecognition(
@@ -253,6 +236,7 @@ const PaymentDoJo = () => {
             )}
             {isRecording && (
               <button
+                disabled={isSendingMessage || isSpeaking}
                 className="Recording-btn stop-btn"
                 onClick={stopRecognition}
               >
