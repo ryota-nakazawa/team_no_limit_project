@@ -53,13 +53,7 @@ export const sendToChatGPTPayment = async (
     if (response.ok) {
       const data = await response.json();
       const responseText = data.choices[0].message.content;
-      setHistory((prevHistory) => [
-        ...prevHistory,
-        { role: "assistant", content: responseText },
-      ]);
-      setTranscript("");
-      setIsSpeaking(true);
-      speakPayment(
+      await speakPayment(
         responseText,
         isSpeaking,
         isVoiceEnabled,
@@ -67,6 +61,12 @@ export const sendToChatGPTPayment = async (
         videoRef,
         setIsSpeaking
       ); // GPTからの返答を読み上げる関数
+      await setHistory((prevHistory) => [
+        ...prevHistory,
+        { role: "assistant", content: responseText },
+      ]);
+      setTranscript("");
+      setIsSpeaking(true);
     } else {
       console.error("Error sending to ChatGPT:", response.statusText);
     }
