@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./SpeechToChatGPT.css";
-import idleMovie from "../movies/idol2.mp4";
+import idleMovie from "../movies/idol3.mp4";
 import { sendToChatGPT } from "./SendingAPI"; // SendingAPIをインポート
 import { startRecognition } from "./SpeechRecognition"; // SpeechRecognitionをインポート
 import { useNavigate } from "react-router-dom";
@@ -103,7 +103,7 @@ const SpeechToChatGPT = () => {
       ]);
     }
   };
-  
+
   // テキスト入力反映
   const handleChange = (event) => {
     setTranscript(event.target.value); // テキスト入力の変更をtranscriptに設定
@@ -218,9 +218,8 @@ const SpeechToChatGPT = () => {
     // テキストエリアの高さをリセット
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${
-        textareaRef.current.scrollHeight - 10
-      }px`;
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight - 10
+        }px`;
     }
   };
 
@@ -229,45 +228,40 @@ const SpeechToChatGPT = () => {
       <div className="sidebar">
         <div className="sidebar-menu">
           <div
-            className={`menu-item ${
-              selectedMenuItem === "englishConversation" ? "active" : ""
-            }`}
+            className={`menu-item ${selectedMenuItem === "englishConversation" ? "active" : ""
+              }`}
             onClick={() => handleMenuItemClick("englishConversation")}
           >
             <TbMessageLanguage className="sidebar-icon" />
             英会話
           </div>
           <div
-            className={`menu-item ${
-              selectedMenuItem === "conversation" ? "active" : ""
-            }`}
+            className={`menu-item ${selectedMenuItem === "conversation" ? "active" : ""
+              }`}
             onClick={() => handleMenuItemClick("conversation")}
           >
             <TbMessages className="sidebar-icon" />
             雑談
           </div>
           <div
-            className={`menu-item ${
-              selectedMenuItem === "translation" ? "active" : ""
-            }`}
+            className={`menu-item ${selectedMenuItem === "translation" ? "active" : ""
+              }`}
             onClick={() => handleMenuItemClick("translation")}
           >
             <PiTranslateBold className="sidebar-icon" />
             日英翻訳
           </div>
           <div
-            className={`menu-item ${
-              selectedMenuItem === "grammar" ? "active" : ""
-            }`}
+            className={`menu-item ${selectedMenuItem === "grammar" ? "active" : ""
+              }`}
             onClick={() => handleMenuItemClick("grammar")}
           >
             <TbTextSpellcheck className="sidebar-icon" />
             英文校正
           </div>
           <div
-            className={`menu-item ${
-              selectedMenuItem === "dance" ? "active" : ""
-            }`}
+            className={`menu-item ${selectedMenuItem === "dance" ? "active" : ""
+              }`}
             onClick={() => handleMenuItemClick("dance")}
           >
             <TbMusic className="sidebar-icon" />
@@ -283,6 +277,7 @@ const SpeechToChatGPT = () => {
           <BsFillVolumeMuteFill className="icon" onClick={toggleVoice} />
         )}
         <video id="myVideo" ref={videoRef} muted loop className="video">
+          {/* <source src={selectedMenuItem === "conversation" ? idleMovieConversation : idleMovie} type="video/mp4" /> */}
           <source src={idleMovie} type="video/mp4" />
         </video>
       </div>
