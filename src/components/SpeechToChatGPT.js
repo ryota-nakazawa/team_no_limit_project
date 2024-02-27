@@ -156,7 +156,7 @@ const SpeechToChatGPT = () => {
 
   // GPTの返答を停止する関数
   const stopSpeaking = () => {
-    speechSynthesis.cancel(); // 読み上げをキャンセル
+    window.globalAudio.pause(); // 読み上げをキャンセル
     handleSpeakEnd();
   };
 
@@ -277,7 +277,6 @@ const SpeechToChatGPT = () => {
           <BsFillVolumeMuteFill className="icon" onClick={toggleVoice} />
         )}
         <video id="myVideo" ref={videoRef} muted loop className="video">
-          {/* <source src={selectedMenuItem === "conversation" ? idleMovieConversation : idleMovie} type="video/mp4" /> */}
           <source src={idleMovie} type="video/mp4" />
         </video>
       </div>
@@ -310,6 +309,7 @@ const SpeechToChatGPT = () => {
             </button>
             {!isRecording && (
               <button
+                disabled={isSendingMessage || isSpeaking}
                 className="Recording-btn start-btn"
                 onClick={() =>
                   startRecognition(
@@ -325,6 +325,7 @@ const SpeechToChatGPT = () => {
             )}
             {isRecording && (
               <button
+                disabled={isSendingMessage || isSpeaking}
                 className="Recording-btn stop-btn"
                 onClick={stopRecognition}
               >
