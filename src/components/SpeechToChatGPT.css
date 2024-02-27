@@ -90,6 +90,10 @@ body {
   overflow-y: auto;
   flex-grow: 1;
   padding: 20px;
+  background-color: rgba(244, 244, 244, 0.4);
+  border: 2px solid #ccc;
+  /* 外枠線を追加 */
+  border-radius: 10%;
 }
 
 /* メッセージ */

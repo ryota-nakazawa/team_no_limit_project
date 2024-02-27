@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./SpeechToChatGPT.css";
 import idleMovie from "../movies/idol3.mp4";
+import conversationImage from "../images/conversation.jpeg";
+import englishConversationImage from "../images/englishConversation.jpeg";
+import translationImage from "../images/translation.jpeg";
+import grammarImage from "../images/grammar.jpeg";
 import { sendToChatGPT } from "./SendingAPI"; // SendingAPIをインポート
 import { startRecognition } from "./SpeechRecognition"; // SpeechRecognitionをインポート
 import { useNavigate } from "react-router-dom";
 import ChatMessage from "./ChatMessage"; // ChatMessageコンポーネントをインポート
-import { motion } from "framer-motion";
 
 import {
   BsFillSendFill,
@@ -71,6 +74,25 @@ const SpeechToChatGPT = () => {
       document.removeEventListener('compositionend', handleCompositionEnd);
     };
   }, []);
+
+  // change background
+  useEffect(() => {
+    //背景URLの設定
+    const backgroundImages = {
+      englishConversation: englishConversationImage,
+      conversation: conversationImage,
+      translation: translationImage,
+      grammar: grammarImage,
+      //dance: 'url("../images/dance.jpg")',
+    };
+    const imageUrl = backgroundImages[selectedMenuItem];
+    // Clear the background image first, force a reflow, then set the new image
+    document.body.style.backgroundImage = "";
+    void document.body.offsetHeight; // Force reflow
+    document.body.style.backgroundImage = `url('${imageUrl}')`;
+
+    console.log("change background url to" + imageUrl); //debug
+  }, [selectedMenuItem]); //selectedMenuItemが更新されるたびに
 
   // 音声言語選択肢
   const languageSettings = {
