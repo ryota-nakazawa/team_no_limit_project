@@ -106,11 +106,16 @@ const SpeechToChatGPT = () => {
 
   // モードごとの説明を定義
   const modeDescriptions = {
-    englishConversation: "英会話モードの説明",
-    conversation: "雑談モードの説明",
-    ENtoJPTranslation: "モードの説明",
-    JPToENTranslation: "モードの説明",
-    grammar: "英文校正モードの説明",
+    englishConversation:
+      "Let's start practicing business English! Ask me anything, and let's enjoy a real conversation. Don’t worry, I'll provide Japanese translations after my English sentences to help you understand better!",
+    conversation:
+      "こんにちは！のんびりとおしゃべりを楽しもう。日々のことから面白いネタまで、何でも話してみて。あなたの気分や関心事に合わせて、会話を盛り上げるね！",
+    ENtoJPTranslation:
+      "英語をここに入れてね！ 私がすぐに日本語に翻訳して、語源や使い方の例も教えるよ。もし文章にちょっとした文法の誤りがあったら、それも修正して理由を説明するね。",
+    JPToENTranslation:
+      "日本語をここに入れてね！私がすぐに英語に翻訳するよ。複数の言い方がある時は選択肢をいくつか示すから、使いたい表現を見つけるのに役立つよ。単語の場合は例文を和訳と一緒に示すから、参考にしてみて！",
+    grammar:
+      "英文の校正をお手伝いするよ！提供された英文をチェックして、文法やスペルのミスを見つけて、もっと良い英文になるようにアドバイスもするから、お任せしてね！",
   };
 
   // モード変更時
