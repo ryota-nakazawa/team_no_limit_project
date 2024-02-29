@@ -312,9 +312,9 @@ const SpeechToChatGPT = () => {
 
       <div className="video-container">
         {isVoiceEnabled ? (
-          <BsFillVolumeUpFill className="icon" onClick={toggleVoice} />
+          <BsFillVolumeUpFill className="icon video-icon" onClick={toggleVoice} />
         ) : (
-          <BsFillVolumeMuteFill className="icon" onClick={toggleVoice} />
+          <BsFillVolumeMuteFill className="icon video-icon" onClick={toggleVoice} />
         )}
         <video id="myVideo" ref={videoRef} muted loop className="video">
           <source src={idleMovie} type="video/mp4" />
