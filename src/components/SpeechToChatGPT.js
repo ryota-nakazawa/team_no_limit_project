@@ -81,7 +81,8 @@ const SpeechToChatGPT = () => {
     const backgroundImages = {
       englishConversation: englishConversationImage,
       conversation: conversationImage,
-      translation: translationImage,
+      ENtoJPTranslation: translationImage,
+      JPToENTranslation: translationImage,
       grammar: grammarImage,
       //dance: 'url("../images/dance.jpg")',
     };
@@ -98,7 +99,8 @@ const SpeechToChatGPT = () => {
   const languageSettings = {
     englishConversation: "en-US",
     conversation: "ja-JP",
-    translation: "en-US",
+    ENtoJPTranslation: "ja-JP",
+    JPToENTranslation: "en-US",
     grammar: "en-US",
   };
 
@@ -106,7 +108,8 @@ const SpeechToChatGPT = () => {
   const modeDescriptions = {
     englishConversation: "英会話モードの説明",
     conversation: "雑談モードの説明",
-    translation: "日英翻訳モードの説明",
+    ENtoJPTranslation: "モードの説明",
+    JPToENTranslation: "モードの説明",
     grammar: "英文校正モードの説明",
   };
 
@@ -266,12 +269,22 @@ const SpeechToChatGPT = () => {
             雑談
           </div>
           <div
-            className={`menu-item ${selectedMenuItem === "translation" ? "active" : ""
-              }`}
-            onClick={() => handleMenuItemClick("translation")}
+            className={`menu-item ${
+              selectedMenuItem === "ENtoJPTranslation" ? "active" : ""
+            }`}
+            onClick={() => handleMenuItemClick("ENtoJPTranslation")}
           >
             <PiTranslateBold className="sidebar-icon" />
-            日英翻訳
+            英→日翻訳
+          </div>
+          <div
+            className={`menu-item ${
+              selectedMenuItem === "JPToENTranslation" ? "active" : ""
+            }`}
+            onClick={() => handleMenuItemClick("JPToENTranslation")}
+          >
+            <PiTranslateBold className="sidebar-icon" />
+            日→英翻訳
           </div>
           <div
             className={`menu-item ${selectedMenuItem === "grammar" ? "active" : ""
