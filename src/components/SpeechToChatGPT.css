@@ -58,6 +58,7 @@ body {
 
 /* アイドル動画 */
 .video-container {
+  flex-direction: column;
   flex-basis: 30%;
   border-radius: 30%;
   overflow: hidden;
@@ -70,8 +71,16 @@ body {
   border-radius: 50%;
   /* 円形に切り取るための半径を設定 */
 }
-
+.video-icon {
+  order: 1;
+  cursor: pointer;
+  margin-bottom: 5px;
+  background-color: #b9b9b9;
+  border-radius: 50%;
+  padding: 4px;
+}
 .video {
+  order: 2;
   pointer-events: none;
   object-fit: cover;
   width: 70%;
@@ -174,9 +183,10 @@ textarea {
   font-size: 14px;
   background-color: #fff;
   height: auto;
-  border-radius: 10px;
+  border-radius: 8px;
   resize: none;
-  line-height: 29px;
+  line-height: 30px;
+  overflow: hidden;
 }
 
 textarea:focus {
@@ -191,10 +201,10 @@ button {
 }
 
 .send-btn {
-  width: 40px;
-  height: 40px;
-  margin-left: 8px;
-  background-color: rgba(25, 150, 250, 0.8);
+  width: 39px;
+  height: 39px;
+  margin-left: 6px;
+  background-color: rgba(25, 150, 250);
 }
 
 .send-btn:hover {
@@ -203,14 +213,12 @@ button {
 
 .Recording-btn {
   background-color: #fff;
-  width: 27px;
-  height: 27px;
-  border-radius: 50%;
-  padding: 1px 8px;
+  padding: 5px 6px;
 }
 
 .Recording-btn:hover {
   filter: brightness(90%);
+  border-radius: 50%;
 }
 
 .clear-btn {
