@@ -211,6 +211,7 @@ const SpeechToChatGPT = () => {
       return;
     }
     setIsSendingMessage(true); // メッセージ送信中の状態をtrueに設定
+    stopRecognition(); // レコーディング停止
 
     if (transcript === "bazz") {
       handleNavigation();
@@ -375,7 +376,7 @@ const SpeechToChatGPT = () => {
           </div>
 
           {isSpeaking ? (
-            <button className="stop-speaking-btn" onClick={stopSpeaking}>
+            <button className="stop-speak-btn" onClick={stopSpeaking}>
               <BsStopCircle className="icon" />
             </button>
           ) : (
