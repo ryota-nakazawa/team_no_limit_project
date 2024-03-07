@@ -3,7 +3,8 @@ import "./SpeechToChatGPT.css";
 import idleMovie from "../movies/idol3.mp4";
 import conversationImage from "../images/conversation.jpeg";
 import englishConversationImage from "../images/englishConversation.jpeg";
-import translationImage from "../images/translation.jpeg";
+import translationImage_ja from "../images/ja_en.jpeg";
+import translationImage_en from "../images/en_ja.jpeg";
 import grammarImage from "../images/grammar.jpeg";
 import { sendToChatGPT } from "./SendingAPI"; // SendingAPIをインポート
 import { startRecognition } from "./SpeechRecognition"; // SpeechRecognitionをインポート
@@ -81,8 +82,8 @@ const SpeechToChatGPT = () => {
     const backgroundImages = {
       englishConversation: englishConversationImage,
       conversation: conversationImage,
-      ENtoJPTranslation: translationImage,
-      JPToENTranslation: translationImage,
+      ENtoJPTranslation: translationImage_en,
+      JPToENTranslation: translationImage_ja,
       grammar: grammarImage,
       //dance: 'url("../images/dance.jpg")',
     };
