@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./SpeechToChatGPT.css";
 import idleMovie from "../movies/idol3.mp4";
-import conversationImage from "../images/conversation.png";
+import conversationImage from "../images/conversation.jpeg";
 import englishConversationImage from "../images/englishConversation.jpeg";
 import translationImage from "../images/translation.jpeg";
 import grammarImage from "../images/grammar.jpeg";
