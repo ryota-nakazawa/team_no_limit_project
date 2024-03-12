@@ -125,6 +125,9 @@ const SpeechToChatGPT = () => {
     setLanguage(languageSettings[item]); // 言語設定を更新
     clearHistory(); // 会話の履歴クリア
     clearTranscript(); // 入力クリア
+    if (window.globalAudio && !window.globalAudio.paused) {
+      stopSpeaking();
+    }
     // モードの説明をチャット履歴に追加
     const description = modeDescriptions[item];
     if (item !== "dance") {
@@ -195,6 +198,9 @@ const SpeechToChatGPT = () => {
 
   // 音声読み上げのオン/オフを切り替える関数
   const toggleVoice = () => {
+    if (window.globalAudio && !window.globalAudio.paused) {
+      stopSpeaking();
+    }
     setIsVoiceEnabled(!isVoiceEnabled);
   };
 
