@@ -40,25 +40,30 @@ export const speak = async (
   isVoiceEnabled,
   language,
   videoRef,
-  setIsSpeaking
+  setIsSpeaking,
+  selectedMenuItem
 ) => {
+  let textToSpeak = text;
+  if (selectedMenuItem === "englishConversation") {
+    textToSpeak = text.replace(/\(.*?\)/g, "").trim();
+  }
   if (isVoiceEnabled) {
     try {
-      const response = await fetch('https://api.openai.com/v1/audio/speech', {
-        method: 'POST',
+      const response = await fetch("https://api.openai.com/v1/audio/speech", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENAI_API_KEY}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: 'tts-1',
-          input: text,
-          voice: "nova"
-        })
+          model: "tts-1",
+          input: textToSpeak,
+          voice: "nova",
+        }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate speech');
+        throw new Error("Failed to generate speech");
       }
 
       const audioBlob = await response.blob();
@@ -81,7 +86,7 @@ export const speak = async (
         videoRef.current.play();
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   } else {
     setIsSpeaking(false);
