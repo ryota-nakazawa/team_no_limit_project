@@ -46,7 +46,7 @@ const SpeechToChatGPT = () => {
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [isIMEActive, setIsIMEActive] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  
+
   useEffect(() => {
     // デフォルトのモード説明をチャット履歴に追加
     const defaultDescription = modeDescriptions[selectedMenuItem];
@@ -267,11 +267,12 @@ const SpeechToChatGPT = () => {
     // テキストエリアの高さをリセット
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight - 10
-        }px`;
+      textareaRef.current.style.height = `${
+        textareaRef.current.scrollHeight - 10
+      }px`;
     }
   };
-
+  
   return (
     <div className="container">
       <div className="sidebar">
