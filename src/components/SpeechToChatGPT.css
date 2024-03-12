@@ -3,7 +3,6 @@
 }
 
 body {
-  background-color: #f2f3f5;
   background-size: cover;
 }
 
@@ -26,7 +25,7 @@ body {
 }
 
 .sidebar-menu {
-  padding: 5px;
+  padding: 3px;
 }
 
 .menu-item {
@@ -39,7 +38,7 @@ body {
 }
 
 .menu-item .sidebar-icon {
-  margin-right: 10px;
+  margin-right: 6px;
 }
 
 .menu-item:hover {
@@ -63,19 +62,15 @@ body {
   border-radius: 30%;
   overflow: hidden;
   display: flex;
-  /* 要素をフレックスボックスに設定 */
   justify-content: center;
-  /* 横方向の中央揃え */
   align-items: center;
-  /* 縦方向の中央揃え */
   border-radius: 50%;
-  /* 円形に切り取るための半径を設定 */
 }
 .video-icon {
   order: 1;
   cursor: pointer;
   margin-bottom: 5px;
-  background-color: #b9b9b9;
+  background-color: #e0e0e0;
   border-radius: 50%;
   padding: 4px;
 }
@@ -130,13 +125,11 @@ body {
   text-align: left;
   position: relative;
   background-color: transparent;
-  /* 背景色を透明にする */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* 影を追加 */
 }
 
 .user-message {
-  background-color: rgb(186, 218, 225);
+  background-color: rgb(186, 195, 225);
   margin-left: auto;
 }
 
@@ -158,7 +151,7 @@ body {
 
 .user-message::after {
   right: -10px;
-  border-left-color: rgb(186, 218, 225);
+  border-left-color: rgb(186, 195, 225);
   border-right: none;
 }
 
@@ -185,12 +178,13 @@ body {
 .textarea-with-icon {
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-right: 5px;
   width: 100%;
 }
 
 textarea {
-  padding: 5px 39px 5px 12px;
+  padding: 5px 41px 5px 12px;
   width: 100%;
   border: none;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -236,10 +230,17 @@ button {
 .Recording-btn {
   background-color: #fff;
   padding: 5px 6px;
+  margin-bottom: 3px;
 }
 .Recording-btn:hover {
   filter: brightness(90%);
   border-radius: 50%;
+}
+
+.stop-btn {
+  background-color: #ff00004f;
+  border-radius: 50%;
+  padding: 5px 6px;
 }
 
 .clear-btn {
@@ -248,6 +249,8 @@ button {
   height: 20px;
   border-radius: 50%;
   font-size: 15px;
+  margin-bottom: 3px;
+  margin-right: 3px;
 }
 
 .icon {
@@ -273,89 +276,97 @@ button {
   letter-spacing: 2px;
 }
 
-/* モバイルフレンドリーなスタイル */
-@media (max-width: 600px) {
-  .container {
-    margin: 0;
-    padding: 0;
+/* サイドーバーの縮小 */
+@media (max-width: 1100px) {
+  /* サイドバー */
+  .sidebar {
+    width: 60px;
+  }
+  .menu-item .sidebar-icon {
+    margin-right: 0px;
+  }
+  .sidebar-icon {
+    width: 25px;
+    height: 25px;
   }
 
-  .video-and-chat-container {
+  .menu-item {
+    justify-content: center;
+    text-align: center;
+    padding: 15px 10px;
     position: relative;
-    width: 100%;
-    height: calc(100vh - 20px);
-    overflow-y: auto;
+    white-space: nowrap;
+    overflow: visible;
   }
-
-  .video-container {
-    position: relative;
-    width: 100%;
-    height: 40%;
-    padding-top: 40%;
-    /* 16:9のアスペクト比を維持するために必要なパディング */
-    /* overflow: hidden; */
-  }
-
-  .video-container video {
+  .menu-item .menu-item-text {
+    display: none;
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .chat-container {
-    margin-top: 10px;
-    /* 動画との間に余白を設定 */
-    padding: 10px;
-    max-width: none;
-    height: calc(100vh - 56.25vw - 20px);
-    /* 動画とチャットの高さの合計が100vhを超えないように調整 */
-    overflow-y: auto;
-    /* コンテナの高さがコンテンツを超えた場合にスクロール可能にする */
-  }
-
-  .clear-history {
-    top: 5px;
-    right: 5px;
-    width: 20px;
-    height: 20px;
-    font-size: 16px;
-    line-height: 20px;
-  }
-
-  .user-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 3px;
-  }
-
-  .user-name {
-    font-size: 11px;
-  }
-
-  .message {
-    max-width: 80%;
-    margin: 5px auto;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #2c3e50;
+    margin-left: 10px;
     padding: 5px;
     border-radius: 5px;
-    font-size: 12px;
+    z-index: 100;
   }
 
-  .textarea-container {
-    width: 60%;
+  .menu-item .menu-item-text::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    bottom: 0;
+    border: 15px solid transparent;
+    border-bottom: 0;
+  }
+  .menu-item .menu-item-text::after {
+    left: -10px;
+    border-right-color: #2c3e50;
+    border-left: none;
+  }
+  .menu-item:hover .menu-item-text {
+    display: block;
+  }
+
+  /* アイドル動画 */
+  .video-container {
+    flex-basis: 40%;
+  }
+  .video {
+    width: 85%;
+    height: 85%;
+  }
+  /* chatエリア */
+  .chat-container {
+    flex-basis: 60%;
+  }
+  .message {
+    width: 85%;
+    margin: 10px;
+    padding: 5px 10px;
+  }
+}
+
+/* モバイルフレンドリーなスタイル */
+@media (max-width: 500px) {
+  .chat-history-container {
+    margin: 5px;
+  }
+  .chat-container {
+    max-width: none;
+    height: calc(100vh - 56.25vw - 20px);
+    overflow-y: auto;
+  }
+  .video {
+    width: 90%;
+    height: 90%;
+  }
+  .message {
+    font-size: 12px;
   }
 
   textarea {
-    height: 30px;
     font-size: 12px;
-  }
-
-  button {
-    width: 30px;
-    height: 30px;
-    margin: 0 2px;
-    border-radius: 15%;
   }
 }
