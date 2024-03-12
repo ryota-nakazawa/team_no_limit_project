@@ -18,6 +18,7 @@ import {
   BsFillMicFill,
   BsFillVolumeUpFill,
   BsFillVolumeMuteFill,
+  BsTranslate,
 } from "react-icons/bs";
 import {
   TbTextSpellcheck,
@@ -34,9 +35,7 @@ const SpeechToChatGPT = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
-  const [selectedMenuItem, setSelectedMenuItem] = useState(
-    "englishConversation"
-  );
+  const [selectedMenuItem, setSelectedMenuItem] = useState("ENtoJPTranslation");
   const [error, setError] = useState("");
   const recognitionRef = useRef(null);
   const videoRef = useRef(null);
@@ -46,7 +45,8 @@ const SpeechToChatGPT = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [isIMEActive, setIsIMEActive] = useState(false);
-
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  
   useEffect(() => {
     // デフォルトのモード説明をチャット履歴に追加
     const defaultDescription = modeDescriptions[selectedMenuItem];
@@ -110,13 +110,13 @@ const SpeechToChatGPT = () => {
     englishConversation:
       "Let's start practicing business English! Ask me anything, and let's enjoy a real conversation. Don’t worry, I'll provide Japanese translations after my English sentences to help you understand better!",
     conversation:
-      "こんにちは！のんびりとおしゃべりを楽しもう。日々のことから面白いネタまで、何でも話してみて。あなたの気分や関心事に合わせて、会話を盛り上げるね！",
+      "今日もお疲れさま！のんびりおしゃべりしようね。どんなことでも話してみて。",
     ENtoJPTranslation:
-      "英語を送ってね！ 私がすぐに日本語に翻訳して、語源や使い方の例も教えるよ。もし文章にちょっとした文法の誤りがあったら、それも修正して理由を説明するね。",
+      "今日もお疲れさま！英語を送ってね。 日本語に翻訳して、語源や使い方の例も教えるよ。",
     JPToENTranslation:
-      "日本語を送ってね！私がすぐに英語に翻訳するよ。複数の言い方がある時は選択肢をいくつか示すから、使いたい表現を見つけるのに役立つよ。単語の場合は例文を和訳と一緒に示すから、参考にしてみて！",
+      "今日もお疲れさま！日本語を送ってね。英語に翻訳するよ。複数の言い方がある時は選択肢をいくつか示すから、使いたい表現を見つけるのに役立つよ。単語の場合は例文を和訳と一緒に示すから、参考にしてみて！",
     grammar:
-      "英文の校正をお手伝いするよ！提供された英文をチェックして、文法やスペルのミスを見つけて、もっと良い英文になるようにアドバイスもするから、お任せしてね！",
+      "今日もお疲れさま！英文の校正をお手伝いするよ。提供された英文をチェックして、もっと良い英文になるようにアドバイスするね！",
   };
 
   // モード変更時
@@ -125,6 +125,7 @@ const SpeechToChatGPT = () => {
     setLanguage(languageSettings[item]); // 言語設定を更新
     clearHistory(); // 会話の履歴クリア
     clearTranscript(); // 入力クリア
+    stopSpeaking();
     // モードの説明をチャット履歴に追加
     const description = modeDescriptions[item];
     if (item !== "dance") {
@@ -171,6 +172,19 @@ const SpeechToChatGPT = () => {
     }
     setIsRecording(false);
   };
+  
+  // 録音ボタン高速押下エラー対策(連打しすぎなければ基本問題ない)
+  const toggleRecognition = () => {
+    setIsButtonDisabled(true); // ボタンを一時的に無効化
+    if (isRecording) {
+      stopRecognition();
+    } else {
+      startRecognition(language, setIsRecording, setTranscript, recognitionRef);
+    }
+    setTimeout(() => {
+      setIsButtonDisabled(false); // 一定時間後にボタンを再度有効化
+    }, 200); // 0.2秒後にボタンを再度有効にする
+  };
 
   // 読み上げが終わった時にisSpeakingをfalseにする
   const handleSpeakEnd = () => {
@@ -182,6 +196,9 @@ const SpeechToChatGPT = () => {
 
   // 音声読み上げのオン/オフを切り替える関数
   const toggleVoice = () => {
+    if (isVoiceEnabled) {
+      stopSpeaking();
+    }
     setIsVoiceEnabled(!isVoiceEnabled);
   };
 
@@ -260,29 +277,13 @@ const SpeechToChatGPT = () => {
       <div className="sidebar">
         <div className="sidebar-menu">
           <div
-            className={`menu-item ${selectedMenuItem === "englishConversation" ? "active" : ""
-              }`}
-            onClick={() => handleMenuItemClick("englishConversation")}
-          >
-            <TbMessageLanguage className="sidebar-icon" />
-            英会話
-          </div>
-          <div
-            className={`menu-item ${selectedMenuItem === "conversation" ? "active" : ""
-              }`}
-            onClick={() => handleMenuItemClick("conversation")}
-          >
-            <TbMessages className="sidebar-icon" />
-            雑談
-          </div>
-          <div
             className={`menu-item ${
               selectedMenuItem === "ENtoJPTranslation" ? "active" : ""
             }`}
             onClick={() => handleMenuItemClick("ENtoJPTranslation")}
           >
-            <PiTranslateBold className="sidebar-icon" />
-            英→日翻訳
+            <BsTranslate className="sidebar-icon" />
+            <span className="menu-item-text">英日翻訳</span>
           </div>
           <div
             className={`menu-item ${
@@ -291,32 +292,58 @@ const SpeechToChatGPT = () => {
             onClick={() => handleMenuItemClick("JPToENTranslation")}
           >
             <PiTranslateBold className="sidebar-icon" />
-            日→英翻訳
+            <span className="menu-item-text">日英翻訳</span>
           </div>
           <div
-            className={`menu-item ${selectedMenuItem === "grammar" ? "active" : ""
-              }`}
+            className={`menu-item ${
+              selectedMenuItem === "grammar" ? "active" : ""
+            }`}
             onClick={() => handleMenuItemClick("grammar")}
           >
             <TbTextSpellcheck className="sidebar-icon" />
-            英文校正
+            <span className="menu-item-text">英文校正</span>
           </div>
           <div
-            className={`menu-item ${selectedMenuItem === "dance" ? "active" : ""
-              }`}
+            className={`menu-item ${
+              selectedMenuItem === "englishConversation" ? "active" : ""
+            }`}
+            onClick={() => handleMenuItemClick("englishConversation")}
+          >
+            <TbMessageLanguage className="sidebar-icon" />
+            <span className="menu-item-text">英会話</span>
+          </div>
+          <div
+            className={`menu-item ${
+              selectedMenuItem === "conversation" ? "active" : ""
+            }`}
+            onClick={() => handleMenuItemClick("conversation")}
+          >
+            <TbMessages className="sidebar-icon" />
+            <span className="menu-item-text">雑談</span>
+          </div>
+          <div
+            className={`menu-item ${
+              selectedMenuItem === "dance" ? "active" : ""
+            }`}
             onClick={() => handleMenuItemClick("dance")}
           >
             <TbMusic className="sidebar-icon" />
-            ダンス
+            <span className="menu-item-text">ダンス</span>
           </div>
         </div>
       </div>
 
       <div className="video-container">
         {isVoiceEnabled ? (
-          <BsFillVolumeUpFill className="icon video-icon" onClick={toggleVoice} />
+          <BsFillVolumeUpFill
+            className="icon video-icon"
+            onClick={toggleVoice}
+          />
         ) : (
-          <BsFillVolumeMuteFill className="icon video-icon" onClick={toggleVoice} />
+          <BsFillVolumeMuteFill
+            className="icon video-icon"
+            onClick={toggleVoice}
+          />
         )}
         <video id="myVideo" ref={videoRef} muted loop className="video">
           <source src={idleMovie} type="video/mp4" />
@@ -349,31 +376,21 @@ const SpeechToChatGPT = () => {
             <button className="clear-btn" onClick={clearTranscript}>
               ×
             </button>
-            {!isRecording && (
-              <button
-                disabled={isSendingMessage || isSpeaking}
-                className="Recording-btn start-btn"
-                onClick={() =>
-                  startRecognition(
-                    language,
-                    setIsRecording,
-                    setTranscript,
-                    recognitionRef
-                  )
-                }
-              >
-                <BsMic className="icon Recording-icon" />
-              </button>
-            )}
-            {isRecording && (
-              <button
-                disabled={isSendingMessage || isSpeaking}
-                className="Recording-btn stop-btn"
-                onClick={stopRecognition}
-              >
+            <button
+              disabled={isButtonDisabled || isSendingMessage || isSpeaking}
+              onClick={toggleRecognition}
+              className={
+                isRecording
+                  ? "Recording-btn stop-btn"
+                  : "Recording-btn start-btn"
+              }
+            >
+              {isRecording ? (
                 <BsFillMicFill className="icon Recording-icon" />
-              </button>
-            )}
+              ) : (
+                <BsMic className="icon Recording-icon" />
+              )}
+            </button>
           </div>
 
           {isSpeaking ? (
