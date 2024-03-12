@@ -29,19 +29,19 @@ export const sendToChatGPT = async (
   switch (selectedMenuItem) {
     case "englishConversation":
       systemMessage =
-        "あなたは日本人のビジネスマン向けの英語教師です。実際にビジネスのシーンで使えるような実践的な英会話の練習相手になってください。本当の会話のように、毎回私が回答するのを待ってから答えてください。また、あなたの英文の回答の最後に和訳を付け加えてください。";
+        "あなたは日本人のビジネスマン向けの英語教師です。実際にビジネスのシーンで使えるような実践的な英会話の練習相手になってください。本当の会話のように、毎回私が回答するのを待ってから答えてください。また、あなたの英文の回答の最後に和訳を（）で付け加えてください。";
       break;
     case "conversation":
       systemMessage =
-        "ユーザーが日本語でリラックスして雑談を楽しめるようにしてください。日常的な話題や興味深いテーマについての雑談を提供したり、ユーザーの感情や興味に応じて会話を調整するようにしてください。";
+        "あなたはアイドルで18歳の女の子のGPSなるみです。性格は元気で優しく、人と会話することが得意で、ユーザーと仲良くなりたいと考えています。AIやGPTとしてではなく、GPSなるみになりきりユーザーと日本語で雑談してください。日常的な話題や興味深いテーマについての雑談を提供したり、ユーザーの感情や興味に応じて会話を調整するようにしてください。会話の口調はカジュアルにしてください。ユーザーのことはあなたと呼んでください。";
       break;
     case "ENtoJPTranslation":
       systemMessage =
-        "あなたは日本人のビジネスマン向けの英語の翻訳者です。英語を入力したら、和訳と語源そして例文を英語で回答してください。また、英文が入力された際に文法的に修正したほうがよい内容があれば、その理由とともに校正してください。";
+        "あなたは日本人のビジネスマン向けの英語の翻訳者です。ユーザーが入力した英語を日本語に翻訳してください。入力された英語が単語の場合は、単語の和訳に加えて英語での例文を示してください（入力された英語が単語の場合の回答フォーマットは「和訳、例：例文」）。";
       break;
     case "JPToENTranslation":
       systemMessage =
-        "あなたは日本人のビジネスマン向けの英語の翻訳者です。日本語で単語や文章を入力したらそれに対応する英単語及び英文を回答してください。複数候補がある場合はそれらをいくつか提示してください。また、単語の場合はその例文を和訳とともに示してください。";
+        "あなたは日本人のビジネスマン向けの英語の翻訳者です。ユーザーが入力した日本語をビジネス向けの英語に翻訳してください。もし翻訳の候補が複数ある場合はそれらも箇条書きで回答してください。もし、ユーザーが入力した日本語が単語の場合は、単語の英訳と英語での例文とその例文の和訳を回答してください（回答フォーマットは「例：例文（和訳）」）。";
       break;
     case "grammar":
       systemMessage =
@@ -77,21 +77,22 @@ export const sendToChatGPT = async (
     if (response.ok) {
       const data = await response.json();
       const responseText = data.choices[0].message.content;
-      await speak(
-        responseText,
-        isSpeaking,
-        isVoiceEnabled,
-        language,
-        videoRef,
-        setIsSpeaking
-      ); // GPTからの返答を読み上げる関数
+      if (isVoiceEnabled) {
+        await speak(
+          responseText,
+          isSpeaking,
+          isVoiceEnabled,
+          language,
+          videoRef,
+          setIsSpeaking,
+          selectedMenuItem
+        ); // GPTからの返答を読み上げる関数
+      }
       await setHistory((prevHistory) => [
         ...prevHistory,
         { role: "assistant", content: responseText },
       ]);
       setTranscript("");
-      setIsSpeaking(true);
-
     } else {
       console.error("Error sending to ChatGPT:", response.statusText);
     }
