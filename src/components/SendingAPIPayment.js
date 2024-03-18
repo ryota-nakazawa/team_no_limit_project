@@ -26,7 +26,6 @@ export const sendToChatGPTPayment = async (
 
   const requestData = {
     model: "gpt-3.5-turbo",
-    max_tokens: 256,
     messages: [
       {
         role: "system",
