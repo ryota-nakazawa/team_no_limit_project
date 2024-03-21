@@ -6,6 +6,7 @@ import englishConversationImage from "../images/englishConversation.jpeg";
 import translationImage_ja from "../images/ja_en.jpeg";
 import translationImage_en from "../images/en_ja.jpeg";
 import grammarImage from "../images/grammar.jpeg";
+import danceVideo from "../movies/YouCamVideo_20240304_222024 3.mp4";
 import { sendToChatGPT } from "./SendingAPI"; // SendingAPIをインポート
 import { startRecognition } from "./SpeechRecognition"; // SpeechRecognitionをインポート
 import { useNavigate } from "react-router-dom";
@@ -336,81 +337,96 @@ const SpeechToChatGPT = () => {
         </div>
       </div>
 
-      <div className="video-container">
-        {isVoiceEnabled ? (
-          <BsFillVolumeUpFill
-            className="icon video-icon"
-            onClick={toggleVoice}
-          />
-        ) : (
-          <BsFillVolumeMuteFill
-            className="icon video-icon"
-            onClick={toggleVoice}
-          />
-        )}
-        <video id="myVideo" ref={videoRef} muted loop className="video">
-          <source src={idleMovie} type="video/mp4" />
-        </video>
-      </div>
-
-      <div className="chat-container">
-        <div className="chat-history-container" ref={chatHistoryRef}>
-          {history.map((message, index) => (
-            <ChatMessage
-              key={index}
-              role={message.role}
-              content={message.content}
-            />
-          ))}
+      {selectedMenuItem === "dance" ? (
+        <div className="danceVideo-container">
+          <video
+            id="danceVideo"
+            // ref={videoRef}
+            src={danceVideo}
+            autoPlay
+            className="danceVideo"
+            controls
+          ></video>
         </div>
-
-        <div className="transcript-and-send-container">
-          <div className="textarea-with-icon">
-            <div className="textarea-container">
-              <textarea
-                ref={textareaRef}
-                rows="1"
-                value={transcript}
-                onChange={handleChange}
-                onKeyDown={handleKeyDown}
-                onInput={resizeTextarea}
+      ) : (
+        <>
+          <div className="video-container">
+            {isVoiceEnabled ? (
+              <BsFillVolumeUpFill
+                className="icon video-icon"
+                onClick={toggleVoice}
               />
-            </div>
-            <button className="clear-btn" onClick={clearTranscript}>
-              ×
-            </button>
-            <button
-              disabled={isButtonDisabled || isSendingMessage || isSpeaking}
-              onClick={toggleRecognition}
-              className={
-                isRecording
-                  ? "Recording-btn stop-btn"
-                  : "Recording-btn start-btn"
-              }
-            >
-              {isRecording ? (
-                <BsFillMicFill className="icon Recording-icon" />
-              ) : (
-                <BsMic className="icon Recording-icon" />
-              )}
-            </button>
+            ) : (
+              <BsFillVolumeMuteFill
+                className="icon video-icon"
+                onClick={toggleVoice}
+              />
+            )}
+            <video id="myVideo" ref={videoRef} muted loop className="video">
+              <source src={idleMovie} type="video/mp4" />
+            </video>
           </div>
 
-          {isSpeaking ? (
-            <button className="stop-speak-btn" onClick={stopSpeaking}>
-              <BsStopCircle className="icon" />
-            </button>
-          ) : (
-            <button
-              className="send-btn"
-              onClick={handleSendToChatGPT}
-              disabled={isSendingMessage}
-            >
-              <BsFillSendFill className="icon" />
-            </button>
-          )}
-        </div>
-      </div>
+          <div className="chat-container">
+            <div className="chat-history-container" ref={chatHistoryRef}>
+              {history.map((message, index) => (
+                <ChatMessage
+                  key={index}
+                  role={message.role}
+                  content={message.content}
+                />
+              ))}
+            </div>
+
+            <div className="transcript-and-send-container">
+              <div className="textarea-with-icon">
+                <div className="textarea-container">
+                  <textarea
+                    ref={textareaRef}
+                    rows="1"
+                    value={transcript}
+                    onChange={handleChange}
+                    onKeyDown={handleKeyDown}
+                    onInput={resizeTextarea}
+                  />
+                </div>
+                <button className="clear-btn" onClick={clearTranscript}>
+                  ×
+                </button>
+                <button
+                  disabled={isButtonDisabled || isSendingMessage || isSpeaking}
+                  onClick={toggleRecognition}
+                  className={
+                    isRecording
+                      ? "Recording-btn stop-btn"
+                      : "Recording-btn start-btn"
+                  }
+                >
+                  {isRecording ? (
+                    <BsFillMicFill className="icon Recording-icon" />
+                  ) : (
+                    <BsMic className="icon Recording-icon" />
+                  )}
+                </button>
+              </div>
+
+              {isSpeaking ? (
+                <button className="stop-speak-btn" onClick={stopSpeaking}>
+                  <BsStopCircle className="icon" />
+                </button>
+              ) : (
+                <button
+                  className="send-btn"
+                  onClick={handleSendToChatGPT}
+                  disabled={isSendingMessage}
+                >
+                  <BsFillSendFill className="icon" />
+                </button>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
