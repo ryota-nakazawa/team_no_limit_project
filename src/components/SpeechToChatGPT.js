@@ -2,11 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import "./SpeechToChatGPT.css";
 import idleMovie from "../movies/idol3.mp4";
 import conversationImage from "../images/conversation.jpeg";
-import englishConversationImage from "../images/englishConversation.jpeg";
-import translationImage_ja from "../images/ja_en.jpeg";
-import translationImage_en from "../images/en_ja.jpeg";
-import grammarImage from "../images/grammar.jpeg";
-import danceVideo from "../movies/YouCamVideo_20240304_222024 3.mp4";
 import { sendToChatGPT } from "./SendingAPI"; // SendingAPIをインポート
 import { startRecognition } from "./SpeechRecognition"; // SpeechRecognitionをインポート
 import { useNavigate } from "react-router-dom";
@@ -19,24 +14,20 @@ import {
   BsFillMicFill,
   BsFillVolumeUpFill,
   BsFillVolumeMuteFill,
-  BsTranslate,
 } from "react-icons/bs";
 import {
-  TbTextSpellcheck,
-  TbMessageLanguage,
-  TbMusic,
   TbMessages,
+  TbHeadset,
 } from "react-icons/tb";
-import { PiTranslateBold } from "react-icons/pi";
 
 const SpeechToChatGPT = () => {
   const [history, setHistory] = useState([]); // 会話の履歴を保持する状態
   const [isRecording, setIsRecording] = useState(false);
-  const [language, setLanguage] = useState("en-US"); // デフォルトの言語を設定
+  const [language, setLanguage] = useState("ja-JP"); // デフォルトの言語を設定
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
-  const [selectedMenuItem, setSelectedMenuItem] = useState("ENtoJPTranslation");
+  const [selectedMenuItem, setSelectedMenuItem] = useState("salesSupport");
   const [error, setError] = useState("");
   const recognitionRef = useRef(null);
   const videoRef = useRef(null);
@@ -49,15 +40,15 @@ const SpeechToChatGPT = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   useEffect(() => {
-    // デフォルトのモード説明をチャット履歴に追加
-    const defaultDescription = modeDescriptions[selectedMenuItem];
-    setHistory((prevHistory) => [
-      ...prevHistory,
-      { role: "assistant", content: defaultDescription },
-    ]);
     // 初回レンダリング時にアニメーションを無効にする
     setIsAnimating(false);
   }, []);
+
+  useEffect(() => {
+    // 選択されたモードに応じて、履歴を初期化し、説明メッセージを表示する
+    const description = modeDescriptions[selectedMenuItem];
+    setHistory([{ role: "assistant", content: description }]);
+  }, [selectedMenuItem]);
 
   // chatの一番下に自動でスクロールする
   useEffect(() => {
@@ -81,61 +72,37 @@ const SpeechToChatGPT = () => {
   useEffect(() => {
     //背景URLの設定
     const backgroundImages = {
-      englishConversation: englishConversationImage,
-      conversation: conversationImage,
-      ENtoJPTranslation: translationImage_en,
-      JPToENTranslation: translationImage_ja,
-      grammar: grammarImage,
-      //dance: 'url("../images/dance.jpg")',
+      salesSupport: conversationImage,
+      consultingSupport: conversationImage, // New
     };
     const imageUrl = backgroundImages[selectedMenuItem];
     // Clear the background image first, force a reflow, then set the new image
     document.body.style.backgroundImage = "";
     void document.body.offsetHeight; // Force reflow
     document.body.style.backgroundImage = `url('${imageUrl}')`;
-
-    console.log("change background url to" + imageUrl); //debug
   }, [selectedMenuItem]); //selectedMenuItemが更新されるたびに
 
   // 音声言語選択肢
   const languageSettings = {
-    englishConversation: "en-US",
-    conversation: "ja-JP",
-    ENtoJPTranslation: "ja-JP",
-    JPToENTranslation: "en-US",
-    grammar: "en-US",
+    salesSupport: "ja-JP",
+    consultingSupport: "ja-JP", // New
   };
 
   // モードごとの説明を定義
   const modeDescriptions = {
-    englishConversation:
-      "Let's start practicing business English! Ask me anything, and let's enjoy a real conversation. Don’t worry, I'll provide Japanese translations after my English sentences to help you understand better!",
-    conversation:
-      "今日もお疲れさま！のんびりおしゃべりしようね。どんなことでも話してみて。",
-    ENtoJPTranslation:
-      "今日もお疲れさま！英語を送ってね。 日本語に翻訳して使い方の例も教えるよ。",
-    JPToENTranslation:
-      "今日もお疲れさま！日本語を送ってね。英語に翻訳するよ。複数の言い方がある時は選択肢をいくつか示すから、使いたい表現を見つけるのに役立つよ。単語の場合は例文を和訳と一緒に示すから、参考にしてみて！",
-    grammar:
-      "今日もお疲れさま！英文の校正をお手伝いするよ。提供された英文をチェックして、もっと良い英文になるようにアドバイスするね！",
+    salesSupport:
+      "営業活動をサポートします。例えば、顧客へのメール作成、商談のロールプレイング、提案内容の壁打ちなど、お気軽にご相談ください。",
+    consultingSupport:
+      "経営課題や事業戦略について、壁打ち相手になります。どのようなことでもご相談ください。", // New
   };
 
   // モード変更時
   const handleMenuItemClick = (item) => {
     setSelectedMenuItem(item);
     setLanguage(languageSettings[item]); // 言語設定を更新
-    clearHistory(); // 会話の履歴クリア
     clearTranscript(); // 入力クリア
     if (window.globalAudio && !window.globalAudio.paused) {
       stopSpeaking();
-    }
-    // モードの説明をチャット履歴に追加
-    const description = modeDescriptions[item];
-    if (item !== "dance") {
-      setHistory((prevHistory) => [
-        ...prevHistory,
-        { role: "assistant", content: description },
-      ]);
     }
   };
 
@@ -228,15 +195,12 @@ const SpeechToChatGPT = () => {
 
   // Chat GPTに送信する関数
   const handleSendToChatGPT = (textFromSpeech) => {
-    console.log("handleSendToChatGPT called");
     const textToSend = typeof textFromSpeech === 'string' ? textFromSpeech : transcript;
 
     if (isSendingMessage === true) {
-      console.log("Already sending a message, returning.");
       return;
     }
     if (!textToSend.trim()) {
-      console.log("Transcript is empty, returning.");
       return;
     }
 
@@ -291,151 +255,102 @@ const SpeechToChatGPT = () => {
         <div className="sidebar-menu">
           <div
             className={`menu-item ${
-              selectedMenuItem === "ENtoJPTranslation" ? "active" : ""
+              selectedMenuItem === "salesSupport" ? "active" : ""
             }`}
-            onClick={() => handleMenuItemClick("ENtoJPTranslation")}
-          >
-            <BsTranslate className="sidebar-icon" />
-            <span className="menu-item-text">英日翻訳</span>
-          </div>
-          <div
-            className={`menu-item ${
-              selectedMenuItem === "JPToENTranslation" ? "active" : ""
-            }`}
-            onClick={() => handleMenuItemClick("JPToENTranslation")}
-          >
-            <PiTranslateBold className="sidebar-icon" />
-            <span className="menu-item-text">日英翻訳</span>
-          </div>
-          <div
-            className={`menu-item ${
-              selectedMenuItem === "grammar" ? "active" : ""
-            }`}
-            onClick={() => handleMenuItemClick("grammar")}
-          >
-            <TbTextSpellcheck className="sidebar-icon" />
-            <span className="menu-item-text">英文校正</span>
-          </div>
-          <div
-            className={`menu-item ${
-              selectedMenuItem === "englishConversation" ? "active" : ""
-            }`}
-            onClick={() => handleMenuItemClick("englishConversation")}
-          >
-            <TbMessageLanguage className="sidebar-icon" />
-            <span className="menu-item-text">英会話</span>
-          </div>
-          <div
-            className={`menu-item ${
-              selectedMenuItem === "conversation" ? "active" : ""
-            }`}
-            onClick={() => handleMenuItemClick("conversation")}
+            onClick={() => handleMenuItemClick("salesSupport")}
           >
             <TbMessages className="sidebar-icon" />
-            <span className="menu-item-text">雑談</span>
+            <span className="menu-item-text">営業支援</span>
           </div>
           <div
             className={`menu-item ${
-              selectedMenuItem === "dance" ? "active" : ""
+              selectedMenuItem === "consultingSupport" ? "active" : ""
             }`}
-            onClick={() => handleMenuItemClick("dance")}
+            onClick={() => handleMenuItemClick("consultingSupport")}
           >
-            <TbMusic className="sidebar-icon" />
-            <span className="menu-item-text">ダンス</span>
+            <TbHeadset className="sidebar-icon" />
+            <span className="menu-item-text">コンサル支援</span>
           </div>
         </div>
       </div>
 
-      {selectedMenuItem === "dance" ? (
-        <div className="danceVideo-container">
-          <video
-            id="danceVideo"
-            // ref={videoRef}
-            src={danceVideo}
-            autoPlay
-            className="danceVideo"
-            controls
-          ></video>
+      <>
+        <div className="video-container">
+          {isVoiceEnabled ? (
+            <BsFillVolumeUpFill
+              className="icon video-icon"
+              onClick={toggleVoice}
+            />
+          ) : (
+            <BsFillVolumeMuteFill
+              className="icon video-icon"
+              onClick={toggleVoice}
+            />
+          )}
+          <video id="myVideo" ref={videoRef} muted loop className="video">
+            <source src={idleMovie} type="video/mp4" />
+          </video>
         </div>
-      ) : (
-        <>
-          <div className="video-container">
-            {isVoiceEnabled ? (
-              <BsFillVolumeUpFill
-                className="icon video-icon"
-                onClick={toggleVoice}
+
+        <div className="chat-container">
+          <div className="chat-history-container" ref={chatHistoryRef}>
+            {history.map((message, index) => (
+              <ChatMessage
+                key={index}
+                role={message.role}
+                content={message.content}
               />
-            ) : (
-              <BsFillVolumeMuteFill
-                className="icon video-icon"
-                onClick={toggleVoice}
-              />
-            )}
-            <video id="myVideo" ref={videoRef} muted loop className="video">
-              <source src={idleMovie} type="video/mp4" />
-            </video>
+            ))}
           </div>
 
-          <div className="chat-container">
-            <div className="chat-history-container" ref={chatHistoryRef}>
-              {history.map((message, index) => (
-                <ChatMessage
-                  key={index}
-                  role={message.role}
-                  content={message.content}
+          <div className="transcript-and-send-container">
+            <div className="textarea-with-icon">
+              <div className="textarea-container">
+                <textarea
+                  ref={textareaRef}
+                  rows="1"
+                  value={transcript}
+                  onChange={handleChange}
+                  onKeyDown={handleKeyDown}
+                  onInput={resizeTextarea}
                 />
-              ))}
-            </div>
-
-            <div className="transcript-and-send-container">
-              <div className="textarea-with-icon">
-                <div className="textarea-container">
-                  <textarea
-                    ref={textareaRef}
-                    rows="1"
-                    value={transcript}
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    onInput={resizeTextarea}
-                  />
-                </div>
-                <button className="clear-btn" onClick={clearTranscript}>
-                  ×
-                </button>
-                <button
-                  disabled={isButtonDisabled || isSendingMessage || isSpeaking}
-                  onClick={toggleRecognition}
-                  className={
-                    isRecording
-                      ? "Recording-btn stop-btn"
-                      : "Recording-btn start-btn"
-                  }
-                >
-                  {isRecording ? (
-                    <BsFillMicFill className="icon Recording-icon" />
-                  ) : (
-                    <BsMic className="icon Recording-icon" />
-                  )}
-                </button>
               </div>
-
-              {isSpeaking ? (
-                <button className="stop-speak-btn" onClick={stopSpeaking}>
-                  <BsStopCircle className="icon" />
-                </button>
-              ) : (
-                <button
-                  className="send-btn"
-                  onClick={handleSendToChatGPT}
-                  disabled={isSendingMessage}
-                >
-                  <BsFillSendFill className="icon" />
-                </button>
-              )}
+              <button className="clear-btn" onClick={clearTranscript}>
+                ×
+              </button>
+              <button
+                disabled={isButtonDisabled || isSendingMessage || isSpeaking}
+                onClick={toggleRecognition}
+                className={
+                  isRecording
+                    ? "Recording-btn stop-btn"
+                    : "Recording-btn start-btn"
+                }
+              >
+                {isRecording ? (
+                  <BsFillMicFill className="icon Recording-icon" />
+                ) : (
+                  <BsMic className="icon Recording-icon" />
+                )}
+              </button>
             </div>
+
+            {isSpeaking ? (
+              <button className="stop-speak-btn" onClick={stopSpeaking}>
+                <BsStopCircle className="icon" />
+              </button>
+            ) : (
+              <button
+                className="send-btn"
+                onClick={handleSendToChatGPT}
+                disabled={isSendingMessage}
+              >
+                <BsFillSendFill className="icon" />
+              </button>
+            )}
           </div>
-        </>
-      )}
+        </div>
+      </>
     </div>
   );
 };

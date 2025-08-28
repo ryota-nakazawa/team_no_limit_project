@@ -1,7 +1,6 @@
 // 音声入力開始の関数
 
 export const startRecognition = (language, setIsRecording, setTranscript, recognitionRef, onSilence) => {
-  console.log("startRecognition called");
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const recognition = new SpeechRecognition();
   let silenceTimer = null;
@@ -12,7 +11,6 @@ export const startRecognition = (language, setIsRecording, setTranscript, recogn
   let finalTranscript = ""; // 最終結果を格納する変数
 
   recognition.onresult = (event) => {
-    console.log("onresult event");
     if (silenceTimer) {
       clearTimeout(silenceTimer);
     }
@@ -28,11 +26,8 @@ export const startRecognition = (language, setIsRecording, setTranscript, recogn
     const currentTranscript = finalTranscript + interimTranscript;
     setTranscript(currentTranscript);
 
-    console.log("Setting silence timer...");
     silenceTimer = setTimeout(() => {
-      console.log("Silence detected!");
       if (currentTranscript.trim()) {
-        console.log("Calling onSilence callback with transcript:", currentTranscript);
         onSilence(currentTranscript);
       }
     }, 1000);
@@ -40,7 +35,6 @@ export const startRecognition = (language, setIsRecording, setTranscript, recogn
 
   // 入力停止一時停止
   recognition.onend = () => {
-    console.log("onend event");
     if (silenceTimer) {
       clearTimeout(silenceTimer);
     }
