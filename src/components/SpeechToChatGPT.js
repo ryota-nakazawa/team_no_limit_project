@@ -52,6 +52,7 @@ const SpeechToChatGPT = () => {
 
   // chatの一番下に自動でスクロールする
   useEffect(() => {
+    console.log("History state updated:", history);
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
@@ -212,6 +213,7 @@ const SpeechToChatGPT = () => {
     } else {
       sendToChatGPT(
         textToSend,
+        history,
         isSpeaking,
         isVoiceEnabled,
         language,
