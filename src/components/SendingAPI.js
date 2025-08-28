@@ -17,6 +17,51 @@ export const sendToChatGPT = async (
   setIsSpeaking,
   setError
 ) => {
+  // 「会議終了」がトリガーの場合、議事録を送信する
+  if (transcript.trim() === "会議終了") {
+    const difyApiUrl = 'https://api.dify.ai/v1/chat-messages';
+    // 注意: 本来は環境変数などで安全に管理すべきAPIキーです
+    const difyApiKey = 'app-O5FgRWI2CRDD1hcLDfKWvCdY';
+
+    // historyの会話ログを整形
+    const formattedHistory = history.map(
+      msg => `${msg.role === 'user' ? 'ユーザー' : 'アシスタント'}: ${msg.content}`
+    ).join('\n\n');
+
+    const requestBody = {
+      inputs: {},
+      query: formattedHistory,
+      response_mode: "streaming",
+      conversation_id: "", // 必要に応じて設定
+      user: "abc-123", // 必要に応じて設定
+    };
+
+    try {
+      const response = await fetch(difyApiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${difyApiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (response.ok) {
+        setHistory(prev => [...prev, { role: 'assistant', content: '会議の議事録を送信しました。' }]);
+      } else {
+        const errorText = await response.text();
+        setError(`議事録の送信に失敗しました: ${response.statusText}`);
+        console.error("Dify API error:", errorText);
+      }
+    } catch (error) {
+      setError(`議事録の送信中にエラーが発生しました: ${error.message}`);
+      console.error("Dify API fetch error:", error);
+    }
+    return; // 通常のChatGPTへの送信は行わない
+  }
+
+  // --- 以下は通常のChatGPTへの送信処理 ---
+
   if (!transcript.trim()) {
     setError("Please say something to send.");
     return;
@@ -78,7 +123,7 @@ export const sendToChatGPT = async (
   ];
 
   const requestData = {
-    model: "gpt-5-nano",
+    model: "gpt-3.5-turbo",
     messages: messagesForAPI,
   };
 
