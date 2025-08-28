@@ -182,7 +182,7 @@ const SpeechToChatGPT = () => {
     if (isRecording) {
       stopRecognition();
     } else {
-      startRecognition(language, setIsRecording, setTranscript, recognitionRef);
+      startRecognition(language, setIsRecording, setTranscript, recognitionRef, (text) => handleSendToChatGPT(text));
     }
     setTimeout(() => {
       setIsButtonDisabled(false); // 一定時間後にボタンを再度有効化
@@ -227,18 +227,27 @@ const SpeechToChatGPT = () => {
   };
 
   // Chat GPTに送信する関数
-  const handleSendToChatGPT = () => {
+  const handleSendToChatGPT = (textFromSpeech) => {
+    console.log("handleSendToChatGPT called");
+    const textToSend = typeof textFromSpeech === 'string' ? textFromSpeech : transcript;
+
     if (isSendingMessage === true) {
+      console.log("Already sending a message, returning.");
       return;
     }
+    if (!textToSend.trim()) {
+      console.log("Transcript is empty, returning.");
+      return;
+    }
+
     setIsSendingMessage(true); // メッセージ送信中の状態をtrueに設定
     stopRecognition(); // レコーディング停止
 
-    if (transcript === "bazz") {
+    if (textToSend === "bazz") {
       handleNavigation();
     } else {
       sendToChatGPT(
-        transcript,
+        textToSend,
         isSpeaking,
         isVoiceEnabled,
         language,
