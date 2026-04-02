@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./SpeechToChatGPT.css";
 import idleMovie from "../movies/idol3.mp4";
-import conversationImage from "../images/conversation.jpeg";
 import { sendToChatGPT } from "./SendingAPI";
 import { startRecognition } from "./SpeechRecognition";
 import { useNavigate } from "react-router-dom";
@@ -53,6 +52,13 @@ const SpeechToChatGPT = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const activeCategory = managerCategoriesById[selectedMenuItem];
+  const idolStatus = isRecording
+    ? "聞き取り中"
+    : isSendingMessage
+      ? "考え中"
+      : isSpeaking
+        ? "返答中"
+        : "待機中";
 
   useEffect(() => {
     setHistory([{ role: "assistant", content: activeCategory.description }]);
@@ -72,18 +78,6 @@ const SpeechToChatGPT = () => {
     return () => {
       document.removeEventListener("compositionstart", handleCompositionStart);
       document.removeEventListener("compositionend", handleCompositionEnd);
-    };
-  }, []);
-
-  useEffect(() => {
-    document.body.style.backgroundImage = `url('${conversationImage}')`;
-    document.body.style.backgroundSize = "cover";
-    document.body.style.backgroundPosition = "center";
-
-    return () => {
-      document.body.style.backgroundImage = "";
-      document.body.style.backgroundSize = "";
-      document.body.style.backgroundPosition = "";
     };
   }, []);
 
@@ -234,7 +228,7 @@ const SpeechToChatGPT = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container home-shell">
       <aside className="manager-sidebar-nav">
         <div className="manager-sidebar-brand">
           <p className="manager-sidebar-kicker">Manager Copilot</p>
@@ -269,21 +263,34 @@ const SpeechToChatGPT = () => {
         </div>
       </aside>
 
-      <div className="video-container">
-        {isVoiceEnabled ? (
-          <BsFillVolumeUpFill
-            className="icon video-icon"
-            onClick={toggleVoice}
-          />
-        ) : (
-          <BsFillVolumeMuteFill
-            className="icon video-icon"
-            onClick={toggleVoice}
-          />
-        )}
-        <video id="myVideo" ref={videoRef} muted loop className="video">
-          <source src={idleMovie} type="video/mp4" />
-        </video>
+      <div
+        className={`video-container idol-stage ${
+          isSpeaking ? "is-speaking" : ""
+        } ${isRecording ? "is-recording" : ""}`}
+      >
+        <div className="idol-stage-shell">
+          {isVoiceEnabled ? (
+            <BsFillVolumeUpFill
+              className="icon video-icon"
+              onClick={toggleVoice}
+            />
+          ) : (
+            <BsFillVolumeMuteFill
+              className="icon video-icon"
+              onClick={toggleVoice}
+            />
+          )}
+          <div className="idol-stage-frame">
+            <div className="idol-stage-ring" />
+            <video id="myVideo" ref={videoRef} muted loop className="video idol-video">
+              <source src={idleMovie} type="video/mp4" />
+            </video>
+          </div>
+          <div className="idol-stage-footer">
+            <span className="idol-status-dot" />
+            <span>{idolStatus}</span>
+          </div>
+        </div>
       </div>
 
       <div className="chat-container">
@@ -308,7 +315,7 @@ const SpeechToChatGPT = () => {
           ))}
         </div>
 
-        <div className="transcript-and-send-container">
+        <div className="transcript-and-send-container composer-shell">
           <div className="textarea-with-icon">
             <div className="textarea-container">
               <textarea
