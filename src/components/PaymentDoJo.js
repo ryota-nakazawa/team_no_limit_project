@@ -192,6 +192,7 @@ const PaymentDoJo = () => {
 
       <div className="chat-container">
         <div className="chat-history-container-bazz" ref={chatHistoryRef}>
+          {error ? <div className="error-banner">{error}</div> : null}
           {history.map((message, index) => (
             <ChatMessage
               key={index}

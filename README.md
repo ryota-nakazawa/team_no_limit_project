@@ -31,6 +31,12 @@ rootディレクトリに.envファイルを作る。
 その後、.envに自分で取得したAPIキーを設定する。（gitignnoreに.envを記載しているので、キーがバレることはありません）
 REACT_APP_OPENAI_API_KEY="Your API KEY"
 
+`.env.example` も追加してあるので、必要ならそれをコピーして `.env` を作成してください。
+
+```bash
+cp .env.example .env
+```
+
 ### `⑥アプリケーションの起動で実際に動かす`
 
 $ npm start

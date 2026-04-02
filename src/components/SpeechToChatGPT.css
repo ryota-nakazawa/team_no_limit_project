@@ -1,8 +1,10 @@
 * {
   font-family: "Arial", sans-serif;
+  box-sizing: border-box;
 }
 
 body {
+  margin: 0;
   background-size: cover;
 }
 
@@ -10,65 +12,125 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
   justify-content: flex-start;
+  height: 100vh;
   overflow-x: hidden;
 }
 
-/* サイドバー */
-.sidebar {
-  width: 160px;
+.manager-sidebar-nav {
+  width: 248px;
   height: 100vh;
-  background-color: #2c3e50;
-  color: white;
+  padding: 18px 16px;
+  background: linear-gradient(180deg, rgba(17, 49, 43, 0.96) 0%, rgba(23, 53, 47, 0.96) 100%);
+  color: #f8f4ea;
   display: flex;
   flex-direction: column;
+  gap: 18px;
   z-index: 1000;
+  box-shadow: 16px 0 40px rgba(17, 22, 24, 0.18);
 }
 
-.sidebar-menu {
-  padding: 3px;
+.manager-sidebar-brand h1 {
+  margin: 0;
+  font-size: 1.55rem;
+  line-height: 1.35;
 }
 
-.menu-item {
-  padding: 15px 20px;
-  cursor: pointer;
+.manager-sidebar-kicker {
+  margin: 0 0 8px;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(248, 244, 234, 0.68);
+}
+
+.manager-sidebar-copy {
+  margin: 10px 0 0;
+  color: rgba(248, 244, 234, 0.82);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.manager-sidebar-menu {
+  display: grid;
+  gap: 10px;
+}
+
+.manager-nav-item {
+  width: 100%;
+  padding: 14px 12px;
+  border: 1px solid rgba(255, 246, 232, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
   display: flex;
-  align-items: center;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-.menu-item .sidebar-icon {
-  margin-right: 6px;
+.manager-nav-item:hover {
+  transform: translateX(3px);
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.menu-item:hover {
-  background-color: #34495e;
+.manager-nav-item.active {
+  background: rgba(200, 104, 58, 0.22);
+  border-color: rgba(240, 166, 113, 0.42);
 }
 
-.menu-item.active {
-  background-color: #2980b9;
+.manager-nav-icon {
+  margin-top: 3px;
+  flex-shrink: 0;
 }
 
-.sidebar-icon {
-  width: 20px;
-  height: 20px;
-  background-size: cover;
+.manager-nav-body {
+  display: grid;
+  gap: 4px;
+  text-align: left;
 }
 
-/* アイドル動画 */
+.manager-nav-label {
+  font-weight: bold;
+  color: #fff8ef;
+}
+
+.manager-nav-subtext {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: rgba(248, 244, 234, 0.68);
+}
+
+.manager-sidebar-footer {
+  margin-top: auto;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 246, 232, 0.08);
+}
+
+.manager-sidebar-footer strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.manager-sidebar-footer p {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: rgba(248, 244, 234, 0.76);
+}
+
 .video-container {
   flex-direction: column;
-  flex-basis: 30%;
-  border-radius: 30%;
+  flex-basis: 24%;
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 50%;
 }
+
 .video-icon {
   order: 1;
   cursor: pointer;
@@ -77,6 +139,7 @@ body {
   border-radius: 50%;
   padding: 4px;
 }
+
 .video {
   order: 2;
   pointer-events: none;
@@ -88,7 +151,6 @@ body {
   border-radius: 50%;
 }
 
-/* アイドルモードダンス */
 .danceVideo-container {
   width: 100%;
   height: 100vh;
@@ -107,12 +169,44 @@ body {
   cursor: pointer;
 }
 
-/* chatエリア */
 .chat-container {
   display: flex;
   flex-direction: column;
-  flex-basis: 70%;
+  flex-basis: calc(76% - 248px);
+  flex-grow: 1;
   height: 100vh;
+}
+
+.chat-category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 20px 0 5px;
+  color: white;
+}
+
+.chat-category-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.32);
+}
+
+.chat-category-label {
+  margin: 0 0 6px;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.chat-reset-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #20333a;
+  cursor: pointer;
 }
 
 .chat-history-container {
@@ -121,26 +215,35 @@ body {
   padding: 20px;
   background-color: rgba(244, 244, 244, 0.4);
   border: 2px solid #ccc;
-  /* 外枠線を追加 */
   border-radius: 8%;
-  margin: 20px 20px 10px 5px;
+  margin: 12px 20px 10px 5px;
 }
-/* chat-history-containerのスクロールバー */
+
 .chat-history-container::-webkit-scrollbar {
   width: 10px;
 }
+
 .chat-history-container::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .chat-history-container::-webkit-scrollbar-thumb {
   background: #ccccccc3;
   border-radius: 10px;
 }
+
 .chat-history-container::-webkit-scrollbar-thumb:hover {
   background: #ccc;
 }
 
-/* メッセージ */
+.error-banner {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(194, 66, 66, 0.16);
+  color: #7c1d1d;
+}
+
 .message {
   width: 75%;
   margin: 10px;
@@ -162,7 +265,6 @@ body {
   margin-right: auto;
 }
 
-/* メッセージの吹き出し */
 .message::after {
   content: "";
   position: absolute;
@@ -194,7 +296,6 @@ body {
   width: 97%;
 }
 
-/* テキストエリア */
 .textarea-container {
   width: 100%;
 }
@@ -220,6 +321,7 @@ textarea {
   line-height: 30px;
   overflow: hidden;
 }
+
 textarea:focus {
   outline: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -237,6 +339,7 @@ button {
   margin-left: 6px;
   background-color: rgba(25, 150, 250);
 }
+
 .send-btn:hover {
   filter: brightness(80%);
 }
@@ -247,6 +350,7 @@ button {
   margin-left: 6px;
   background-color: #fff;
 }
+
 .stop-speak-btn:hover {
   filter: brightness(80%);
 }
@@ -256,6 +360,7 @@ button {
   padding: 5px 6px;
   margin-bottom: 3px;
 }
+
 .Recording-btn:hover {
   filter: brightness(90%);
   border-radius: 50%;
@@ -294,99 +399,105 @@ button {
 
 .header span {
   color: #ff4081;
-  /* オシャレな色に変更 */
   font-weight: bold;
   font-size: 3.5rem;
   letter-spacing: 2px;
 }
 
-/* サイドーバーの縮小 */
-@media (max-width: 1100px) {
-  /* サイドバー */
-  .sidebar {
-    width: 60px;
-  }
-  .menu-item .sidebar-icon {
-    margin-right: 0px;
-  }
-  .sidebar-icon {
-    width: 25px;
-    height: 25px;
+@media (max-width: 1280px) {
+  .manager-sidebar-nav {
+    width: 220px;
   }
 
-  .menu-item {
-    justify-content: center;
-    text-align: center;
-    padding: 15px 10px;
-    position: relative;
-    white-space: nowrap;
-    overflow: visible;
-  }
-  .menu-item .menu-item-text {
-    display: none;
-    position: absolute;
-    left: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #2c3e50;
-    margin-left: 10px;
-    padding: 5px;
-    border-radius: 5px;
-    z-index: 100;
-  }
-
-  .menu-item .menu-item-text::after {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 0;
-    bottom: 0;
-    border: 15px solid transparent;
-    border-bottom: 0;
-  }
-  .menu-item .menu-item-text::after {
-    left: -10px;
-    border-right-color: #2c3e50;
-    border-left: none;
-  }
-  .menu-item:hover .menu-item-text {
-    display: block;
-  }
-
-  /* アイドル動画 */
-  .video-container {
-    flex-basis: 40%;
-  }
-  .video {
-    width: 85%;
-    height: 85%;
-  }
-  /* chatエリア */
   .chat-container {
-    flex-basis: 60%;
+    flex-basis: calc(76% - 220px);
   }
-  .message {
-    width: 85%;
-    margin: 10px;
-    padding: 5px 10px;
+
+  .manager-nav-subtext {
+    display: none;
   }
 }
 
-/* モバイルフレンドリーなスタイル */
-@media (max-width: 500px) {
-  .chat-history-container {
-    margin: 5px;
+@media (max-width: 1100px) {
+  .manager-sidebar-nav {
+    width: 84px;
+    padding: 14px 10px;
   }
+
+  .manager-sidebar-brand h1,
+  .manager-sidebar-copy,
+  .manager-sidebar-footer,
+  .manager-nav-subtext {
+    display: none;
+  }
+
+  .manager-nav-item {
+    justify-content: center;
+    padding: 14px 10px;
+  }
+
+  .manager-nav-body {
+    display: none;
+  }
+
+  .video-container {
+    flex-basis: 34%;
+  }
+
   .chat-container {
-    max-width: none;
-    height: calc(100vh - 56.25vw - 20px);
-    overflow-y: auto;
+    flex-basis: calc(66% - 84px);
   }
-  .video {
-    width: 90%;
-    height: 90%;
-  }
+
   .message {
+    width: 85%;
+  }
+}
+
+@media (max-width: 700px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .manager-sidebar-nav {
+    width: 100%;
+    height: auto;
+    padding: 16px;
+    box-shadow: none;
+  }
+
+  .manager-sidebar-brand h1,
+  .manager-sidebar-copy,
+  .manager-sidebar-footer,
+  .manager-nav-body {
+    display: block;
+  }
+
+  .manager-sidebar-menu {
+    grid-template-columns: 1fr;
+  }
+
+  .manager-nav-item {
+    justify-content: flex-start;
+  }
+
+  .video-container,
+  .chat-container {
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .chat-category-header {
+    padding: 12px 12px 0;
+  }
+
+  .chat-history-container {
+    margin: 8px 10px;
+  }
+
+  .message {
+    width: 100%;
     font-size: 12px;
   }
 

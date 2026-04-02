@@ -1,6 +1,5 @@
 // Chat GPTの応答を音声で読み上げる関数
-
-const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
+import { postOpenAIJson } from "../utils/openaiClient";
 
 // Chat GPTの応答を音声で読み上げる関数
 
@@ -14,23 +13,11 @@ export const speakPayment = async (
 ) => {
   if (isVoiceEnabled) {
     try {
-      const response = await fetch('https://api.openai.com/v1/audio/speech', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENAI_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: 'tts-1',
-          input: text,
-          voice: 'alloy'
-        })
+      const response = await postOpenAIJson("/audio/speech", {
+        model: "tts-1",
+        input: text,
+        voice: "alloy",
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate speech');
-      }
-
       const audioBlob = await response.blob();
       const audioURL = URL.createObjectURL(audioBlob);
 
@@ -51,7 +38,8 @@ export const speakPayment = async (
         videoRef.current.play();
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error generating speech:", error);
+      setIsSpeaking(false);
     }
   } else {
     setIsSpeaking(false);

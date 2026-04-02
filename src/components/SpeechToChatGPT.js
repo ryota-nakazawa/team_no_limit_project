@@ -1,115 +1,103 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./SpeechToChatGPT.css";
 import idleMovie from "../movies/idol3.mp4";
 import conversationImage from "../images/conversation.jpeg";
-import { sendToChatGPT } from "./SendingAPI"; // SendingAPIをインポート
-import { startRecognition } from "./SpeechRecognition"; // SpeechRecognitionをインポート
+import { sendToChatGPT } from "./SendingAPI";
+import { startRecognition } from "./SpeechRecognition";
 import { useNavigate } from "react-router-dom";
-import ChatMessage from "./ChatMessage"; // ChatMessageコンポーネントをインポート
-
+import ChatMessage from "./ChatMessage";
 import {
-  BsFillSendFill,
-  BsStopCircle,
-  BsMic,
+  managerCategories,
+  managerCategoriesById,
+} from "../data/managerCategories";
+import {
+  BsBarChart,
+  BsCheck2Circle,
+  BsClipboardCheck,
+  BsCompass,
   BsFillMicFill,
-  BsFillVolumeUpFill,
+  BsFillSendFill,
   BsFillVolumeMuteFill,
+  BsFillVolumeUpFill,
+  BsMic,
+  BsPeople,
+  BsStopCircle,
 } from "react-icons/bs";
-import {
-  TbMessages,
-  TbHeadset,
-} from "react-icons/tb";
+
+const categoryIcons = {
+  dailyOps: <BsCompass className="manager-nav-icon" />,
+  meetingOps: <BsClipboardCheck className="manager-nav-icon" />,
+  memberSupport: <BsPeople className="manager-nav-icon" />,
+  stakeholderComms: <BsCheck2Circle className="manager-nav-icon" />,
+  planningAnalysis: <BsBarChart className="manager-nav-icon" />,
+};
 
 const SpeechToChatGPT = () => {
-  const [history, setHistory] = useState([]); // 会話の履歴を保持する状態
+  const [history, setHistory] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
-  const [language, setLanguage] = useState("ja-JP"); // デフォルトの言語を設定
+  const [language, setLanguage] = useState("ja-JP");
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
-  const [selectedMenuItem, setSelectedMenuItem] = useState("salesSupport");
+  const [selectedMenuItem, setSelectedMenuItem] = useState(
+    managerCategories[0].id
+  );
   const [error, setError] = useState("");
   const recognitionRef = useRef(null);
   const videoRef = useRef(null);
   const chatHistoryRef = useRef(null);
   const textareaRef = useRef(null);
   const navigate = useNavigate();
-  const [isAnimating, setIsAnimating] = useState(false);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [isIMEActive, setIsIMEActive] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  useEffect(() => {
-    // 初回レンダリング時にアニメーションを無効にする
-    setIsAnimating(false);
-  }, []);
+  const activeCategory = managerCategoriesById[selectedMenuItem];
 
   useEffect(() => {
-    // 選択されたモードに応じて、履歴を初期化し、説明メッセージを表示する
-    const description = modeDescriptions[selectedMenuItem];
-    setHistory([{ role: "assistant", content: description }]);
-  }, [selectedMenuItem]);
+    setHistory([{ role: "assistant", content: activeCategory.description }]);
+    setError("");
+  }, [activeCategory]);
 
-  // chatの一番下に自動でスクロールする
   useEffect(() => {
-    console.log("History state updated:", history);
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
-  }, [history]); // historyが更新されるたびに実行
+  }, [history]);
 
-  //テキストの入力が編集中がどうかを判断する
   useEffect(() => {
-    document.addEventListener('compositionstart', handleCompositionStart);
-    document.addEventListener('compositionend', handleCompositionEnd);
+    document.addEventListener("compositionstart", handleCompositionStart);
+    document.addEventListener("compositionend", handleCompositionEnd);
 
     return () => {
-      document.removeEventListener('compositionstart', handleCompositionStart);
-      document.removeEventListener('compositionend', handleCompositionEnd);
+      document.removeEventListener("compositionstart", handleCompositionStart);
+      document.removeEventListener("compositionend", handleCompositionEnd);
     };
   }, []);
 
-  // change background
   useEffect(() => {
-    //背景URLの設定
-    const backgroundImages = {
-      salesSupport: conversationImage,
-      consultingSupport: conversationImage, // New
+    document.body.style.backgroundImage = `url('${conversationImage}')`;
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+
+    return () => {
+      document.body.style.backgroundImage = "";
+      document.body.style.backgroundSize = "";
+      document.body.style.backgroundPosition = "";
     };
-    const imageUrl = backgroundImages[selectedMenuItem];
-    // Clear the background image first, force a reflow, then set the new image
-    document.body.style.backgroundImage = "";
-    void document.body.offsetHeight; // Force reflow
-    document.body.style.backgroundImage = `url('${imageUrl}')`;
-  }, [selectedMenuItem]); //selectedMenuItemが更新されるたびに
+  }, []);
 
-  // 音声言語選択肢
-  const languageSettings = {
-    salesSupport: "ja-JP",
-    consultingSupport: "ja-JP", // New
-  };
-
-  // モードごとの説明を定義
-  const modeDescriptions = {
-    salesSupport:
-      "営業活動をサポートします。例えば、顧客へのメール作成、商談のロールプレイング、提案内容の壁打ちなど、お気軽にご相談ください。",
-    consultingSupport:
-      "経営課題や事業戦略について、壁打ち相手になります。どのようなことでもご相談ください。", // New
-  };
-
-  // モード変更時
   const handleMenuItemClick = (item) => {
     setSelectedMenuItem(item);
-    setLanguage(languageSettings[item]); // 言語設定を更新
-    clearTranscript(); // 入力クリア
+    setLanguage("ja-JP");
+    clearTranscript();
     if (window.globalAudio && !window.globalAudio.paused) {
       stopSpeaking();
     }
   };
 
-  // テキスト入力反映
   const handleChange = (event) => {
-    setTranscript(event.target.value); // テキスト入力の変更をtranscriptに設定
+    setTranscript(event.target.value);
   };
 
   const handleCompositionStart = () => {
@@ -120,7 +108,6 @@ const SpeechToChatGPT = () => {
     setIsIMEActive(false);
   };
 
-  // テキストエリアをリサイズする関数
   const resizeTextarea = (event) => {
     const textarea = event.target;
     const lineHeight = parseInt(getComputedStyle(textarea).lineHeight, 10);
@@ -136,113 +123,108 @@ const SpeechToChatGPT = () => {
     textarea.style.height = `${Math.max(rows, minRows) * lineHeight - 10}px`;
   };
 
-  // 音声入力停止
   const stopRecognition = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
     setIsRecording(false);
   };
-  
-  // 録音ボタン高速押下エラー対策(連打しすぎなければ基本問題ない)
+
   const toggleRecognition = () => {
-    setIsButtonDisabled(true); // ボタンを一時的に無効化
+    setIsButtonDisabled(true);
     if (isRecording) {
       stopRecognition();
     } else {
-      startRecognition(language, setIsRecording, setTranscript, recognitionRef, (text) => handleSendToChatGPT(text));
+      startRecognition(
+        language,
+        setIsRecording,
+        setTranscript,
+        recognitionRef,
+        (text) => handleSendToChatGPT(text)
+      );
     }
     setTimeout(() => {
-      setIsButtonDisabled(false); // 一定時間後にボタンを再度有効化
-    }, 200); // 0.2秒後にボタンを再度有効にする
+      setIsButtonDisabled(false);
+    }, 200);
   };
 
-  // 読み上げが終わった時にisSpeakingをfalseにする
   const handleSpeakEnd = () => {
-    setIsSpeaking(false); // 読み上げが終了したことを示す
+    setIsSpeaking(false);
     if (videoRef.current) {
-      videoRef.current.pause(); // ビデオを一時停止
+      videoRef.current.pause();
     }
   };
 
-  // 音声読み上げのオン/オフを切り替える関数
   const toggleVoice = () => {
     if (window.globalAudio && !window.globalAudio.paused) {
       stopSpeaking();
     }
-    setIsVoiceEnabled(!isVoiceEnabled);
+    setIsVoiceEnabled((prevState) => !prevState);
   };
 
-  // GPTの返答を停止する関数
   const stopSpeaking = () => {
-    window.globalAudio.pause(); // 読み上げをキャンセル
+    if (window.globalAudio) {
+      window.globalAudio.pause();
+    }
     handleSpeakEnd();
   };
 
   const handleNavigation = () => {
-    setIsAnimating(true); // アニメーションを開始
-    setTimeout(() => {
-      navigate("/payment", { state: { message: '成功', type: 'success' } }); // '/payment' パスへの遷移
-    }, 300); // アニメーションが完了するまでの時間
+    navigate("/payment", { state: { message: "成功", type: "success" } });
   };
 
-  // エンターキーが押され、Shiftキーが押されていない場合に送信する
   const handleKeyDown = (event) => {
     if (event.key === "Enter" && !event.shiftKey && !isIMEActive) {
-      event.preventDefault(); // デフォルトのエンターキーの動作（改行）を防止
-      handleSendToChatGPT(); // チャット送信関数を呼び出す
+      event.preventDefault();
+      handleSendToChatGPT();
     }
   };
 
-  // Chat GPTに送信する関数
   const handleSendToChatGPT = (textFromSpeech) => {
-    const textToSend = typeof textFromSpeech === 'string' ? textFromSpeech : transcript;
+    const textToSend =
+      typeof textFromSpeech === "string" ? textFromSpeech : transcript;
 
-    if (isSendingMessage === true) {
-      return;
-    }
-    if (!textToSend.trim()) {
+    if (isSendingMessage || !textToSend.trim()) {
       return;
     }
 
-    setIsSendingMessage(true); // メッセージ送信中の状態をtrueに設定
-    stopRecognition(); // レコーディング停止
+    setIsSendingMessage(true);
+    stopRecognition();
 
     if (textToSend === "bazz") {
       handleNavigation();
-    } else {
-      sendToChatGPT(
-        textToSend,
-        history,
-        isSpeaking,
-        isVoiceEnabled,
-        language,
-        videoRef,
-        selectedMenuItem,
-        setHistory,
-        setTranscript,
-        setIsSpeaking,
-        setError
-      )
-        .then(() => {
-          setIsSendingMessage(false); // メッセージ送信が完了したら状態をfalseに設定
-        })
-        .catch((error) => {
-          setError(error);
-          setIsSendingMessage(false); // エラーが発生した場合も状態をfalseに設定
-        });
+      return;
     }
+
+    sendToChatGPT(
+      textToSend,
+      history,
+      isSpeaking,
+      isVoiceEnabled,
+      language,
+      videoRef,
+      selectedMenuItem,
+      setHistory,
+      setTranscript,
+      setIsSpeaking,
+      setError
+    )
+      .then(() => {
+        setIsSendingMessage(false);
+      })
+      .catch((requestError) => {
+        setError(requestError?.message || String(requestError));
+        setIsSendingMessage(false);
+      });
   };
 
-  // チャット履歴を消去する関数
   const clearHistory = () => {
-    setHistory([]);
+    setHistory([{ role: "assistant", content: activeCategory.description }]);
+    setError("");
   };
 
-  // 入力を消去する関数
   const clearTranscript = () => {
     setTranscript("");
-    // テキストエリアの高さをリセット
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${
@@ -250,109 +232,132 @@ const SpeechToChatGPT = () => {
       }px`;
     }
   };
-  
+
   return (
     <div className="container">
-      <div className="sidebar">
-        <div className="sidebar-menu">
-          <div
-            className={`menu-item ${
-              selectedMenuItem === "salesSupport" ? "active" : ""
-            }`}
-            onClick={() => handleMenuItemClick("salesSupport")}
-          >
-            <TbMessages className="sidebar-icon" />
-            <span className="menu-item-text">営業支援</span>
-          </div>
-          <div
-            className={`menu-item ${
-              selectedMenuItem === "consultingSupport" ? "active" : ""
-            }`}
-            onClick={() => handleMenuItemClick("consultingSupport")}
-          >
-            <TbHeadset className="sidebar-icon" />
-            <span className="menu-item-text">コンサル支援</span>
-          </div>
+      <aside className="manager-sidebar-nav">
+        <div className="manager-sidebar-brand">
+          <p className="manager-sidebar-kicker">Manager Copilot</p>
+          <h1>課長お助けエージェント</h1>
+          <p className="manager-sidebar-copy">
+            アイドルに相談しながら、課長業務をカテゴリ別に支援します。
+          </p>
         </div>
+
+        <div className="manager-sidebar-menu">
+          {managerCategories.map((category) => (
+            <button
+              key={category.id}
+              className={`manager-nav-item ${
+                selectedMenuItem === category.id ? "active" : ""
+              }`}
+              onClick={() => handleMenuItemClick(category.id)}
+              type="button"
+            >
+              {categoryIcons[category.id]}
+              <span className="manager-nav-body">
+                <span className="manager-nav-label">{category.label}</span>
+                <span className="manager-nav-subtext">{category.title}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <div className="manager-sidebar-footer">
+          <strong>{activeCategory.label}</strong>
+          <p>{activeCategory.summary}</p>
+        </div>
+      </aside>
+
+      <div className="video-container">
+        {isVoiceEnabled ? (
+          <BsFillVolumeUpFill
+            className="icon video-icon"
+            onClick={toggleVoice}
+          />
+        ) : (
+          <BsFillVolumeMuteFill
+            className="icon video-icon"
+            onClick={toggleVoice}
+          />
+        )}
+        <video id="myVideo" ref={videoRef} muted loop className="video">
+          <source src={idleMovie} type="video/mp4" />
+        </video>
       </div>
 
-      <>
-        <div className="video-container">
-          {isVoiceEnabled ? (
-            <BsFillVolumeUpFill
-              className="icon video-icon"
-              onClick={toggleVoice}
-            />
-          ) : (
-            <BsFillVolumeMuteFill
-              className="icon video-icon"
-              onClick={toggleVoice}
-            />
-          )}
-          <video id="myVideo" ref={videoRef} muted loop className="video">
-            <source src={idleMovie} type="video/mp4" />
-          </video>
+      <div className="chat-container">
+        <div className="chat-category-header">
+          <div>
+            <p className="chat-category-label">{activeCategory.label}</p>
+            <h2>{activeCategory.title}</h2>
+          </div>
+          <button type="button" className="chat-reset-btn" onClick={clearHistory}>
+            履歴を初期化
+          </button>
         </div>
 
-        <div className="chat-container">
-          <div className="chat-history-container" ref={chatHistoryRef}>
-            {history.map((message, index) => (
-              <ChatMessage
-                key={index}
-                role={message.role}
-                content={message.content}
+        <div className="chat-history-container" ref={chatHistoryRef}>
+          {error ? <div className="error-banner">{error}</div> : null}
+          {history.map((message, index) => (
+            <ChatMessage
+              key={index}
+              role={message.role}
+              content={message.content}
+            />
+          ))}
+        </div>
+
+        <div className="transcript-and-send-container">
+          <div className="textarea-with-icon">
+            <div className="textarea-container">
+              <textarea
+                ref={textareaRef}
+                rows="1"
+                value={transcript}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                onInput={resizeTextarea}
+                placeholder="状況や相談したい内容を入力してください"
               />
-            ))}
-          </div>
-
-          <div className="transcript-and-send-container">
-            <div className="textarea-with-icon">
-              <div className="textarea-container">
-                <textarea
-                  ref={textareaRef}
-                  rows="1"
-                  value={transcript}
-                  onChange={handleChange}
-                  onKeyDown={handleKeyDown}
-                  onInput={resizeTextarea}
-                />
-              </div>
-              <button className="clear-btn" onClick={clearTranscript}>
-                ×
-              </button>
-              <button
-                disabled={isButtonDisabled || isSendingMessage || isSpeaking}
-                onClick={toggleRecognition}
-                className={
-                  isRecording
-                    ? "Recording-btn stop-btn"
-                    : "Recording-btn start-btn"
-                }
-              >
-                {isRecording ? (
-                  <BsFillMicFill className="icon Recording-icon" />
-                ) : (
-                  <BsMic className="icon Recording-icon" />
-                )}
-              </button>
             </div>
-
-            {isSpeaking ? (
-              <button className="stop-speak-btn" onClick={stopSpeaking}>
-                <BsStopCircle className="icon" />
-              </button>
-            ) : (
-              <button
-                className="send-btn"
-                onClick={handleSendToChatGPT}
-                disabled={isSendingMessage}
-              >
-                <BsFillSendFill className="icon" />
-              </button>
-            )}
+            <button className="clear-btn" onClick={clearTranscript} type="button">
+              ×
+            </button>
+            <button
+              disabled={isButtonDisabled || isSendingMessage || isSpeaking}
+              onClick={toggleRecognition}
+              className={
+                isRecording
+                  ? "Recording-btn stop-btn"
+                  : "Recording-btn start-btn"
+              }
+              type="button"
+            >
+              {isRecording ? (
+                <BsFillMicFill className="icon Recording-icon" />
+              ) : (
+                <BsMic className="icon Recording-icon" />
+              )}
+            </button>
           </div>
+
+          {isSpeaking ? (
+            <button className="stop-speak-btn" onClick={stopSpeaking} type="button">
+              <BsStopCircle className="icon" />
+            </button>
+          ) : (
+            <button
+              className="send-btn"
+              onClick={handleSendToChatGPT}
+              disabled={isSendingMessage}
+              type="button"
+            >
+              <BsFillSendFill className="icon" />
+            </button>
+          )}
         </div>
-      </>
+      </div>
     </div>
   );
 };

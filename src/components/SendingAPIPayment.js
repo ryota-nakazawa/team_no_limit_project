@@ -1,8 +1,6 @@
 // Chat GPTに送信する関数
 import speakPayment from "./SpeakPayment";
-
-const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
-const OPENAI_API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
+import { postOpenAIJson } from "../utils/openaiClient";
 
 export const sendToChatGPTPayment = async (
   transcript,
@@ -16,7 +14,7 @@ export const sendToChatGPTPayment = async (
   setError
 ) => {
   if (!transcript.trim()) {
-    setError("Please say something to send.");
+    setError("送信する内容を入力してください。");
     return;
   }
   setHistory((prevHistory) => [
@@ -41,36 +39,26 @@ export const sendToChatGPTPayment = async (
   };
 
   try {
-    const response = await fetch(OPENAI_API_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify(requestData),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      const responseText = data.choices[0].message.content;
-      await speakPayment(
-        responseText,
-        isSpeaking,
-        isVoiceEnabled,
-        language,
-        videoRef,
-        setIsSpeaking
-      ); // GPTからの返答を読み上げる関数
-      await setHistory((prevHistory) => [
-        ...prevHistory,
-        { role: "assistant", content: responseText },
-      ]);
-      setTranscript("");
-      setIsSpeaking(true);
-    } else {
-      console.error("Error sending to ChatGPT:", response.statusText);
-    }
+    const response = await postOpenAIJson("/chat/completions", requestData);
+    const data = await response.json();
+    const responseText = data.choices[0].message.content;
+    await speakPayment(
+      responseText,
+      isSpeaking,
+      isVoiceEnabled,
+      language,
+      videoRef,
+      setIsSpeaking
+    );
+    await setHistory((prevHistory) => [
+      ...prevHistory,
+      { role: "assistant", content: responseText },
+    ]);
+    setTranscript("");
+    setIsSpeaking(true);
+    setError("");
   } catch (error) {
+    setError(error.message);
     console.error("Error sending to ChatGPT:", error);
   }
 };
