@@ -18,6 +18,9 @@ import {
   BsFillSendFill,
   BsFillVolumeMuteFill,
   BsFillVolumeUpFill,
+  BsGlobe,
+  BsKanban,
+  BsLightbulb,
   BsMic,
   BsPeople,
   BsStopCircle,
@@ -29,6 +32,9 @@ const categoryIcons = {
   memberSupport: <BsPeople className="manager-nav-icon" />,
   stakeholderComms: <BsCheck2Circle className="manager-nav-icon" />,
   planningAnalysis: <BsBarChart className="manager-nav-icon" />,
+  decisionSupport: <BsLightbulb className="manager-nav-icon" />,
+  progressManagement: <BsKanban className="manager-nav-icon" />,
+  englishPractice: <BsGlobe className="manager-nav-icon" />,
 };
 
 const SpeechToChatGPT = () => {

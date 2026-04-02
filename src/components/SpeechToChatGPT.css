@@ -6,7 +6,7 @@
 body {
   margin: 0;
   background-size: cover;
-  background: #122232;
+  background: #203142;
 }
 
 .container {
@@ -151,9 +151,9 @@ button {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 42% 44%, rgba(253, 220, 183, 0.16) 0%, rgba(253, 220, 183, 0.06) 18%, rgba(18, 34, 50, 0) 42%),
-    radial-gradient(circle at 50% 6%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 16%, rgba(18, 34, 50, 0) 36%),
-    linear-gradient(90deg, rgba(9, 18, 28, 0.8) 0%, rgba(12, 24, 36, 0.34) 44%, rgba(9, 18, 28, 0.52) 100%);
+    radial-gradient(circle at 50% 16%, rgba(255, 232, 201, 0.2) 0%, rgba(255, 232, 201, 0.08) 16%, rgba(32, 49, 66, 0) 36%),
+    radial-gradient(circle at 50% 46%, rgba(250, 223, 188, 0.18) 0%, rgba(250, 223, 188, 0.06) 24%, rgba(32, 49, 66, 0) 46%),
+    linear-gradient(90deg, rgba(8, 18, 30, 0.54) 0%, rgba(32, 49, 66, 0.08) 18%, rgba(32, 49, 66, 0.08) 82%, rgba(8, 18, 30, 0.48) 100%);
   pointer-events: none;
 }
 
@@ -165,8 +165,10 @@ button {
 .home-shell {
   position: relative;
   background:
-    radial-gradient(circle at top, rgba(240, 228, 207, 0.12) 0%, rgba(18, 34, 50, 0) 32%),
-    linear-gradient(180deg, #20374d 0%, #162839 52%, #0f1b28 100%);
+    linear-gradient(90deg, rgba(7, 17, 28, 0.34) 0 7%, rgba(0, 0, 0, 0) 7% 93%, rgba(7, 17, 28, 0.3) 93% 100%),
+    linear-gradient(90deg, rgba(87, 69, 48, 0.1) 0 1.2%, rgba(0, 0, 0, 0) 1.2% 98.8%, rgba(87, 69, 48, 0.08) 98.8% 100%),
+    radial-gradient(circle at 50% 24%, rgba(255, 243, 226, 0.28) 0%, rgba(233, 220, 204, 0.16) 18%, rgba(32, 49, 66, 0.08) 42%, rgba(32, 49, 66, 0) 64%),
+    linear-gradient(180deg, #31485f 0%, #233648 52%, #1a2937 100%);
 }
 
 .home-shell .manager-sidebar-nav {
@@ -215,13 +217,14 @@ button {
   flex: 1 1 auto;
   min-height: 0;
   align-content: start;
-  overflow: hidden;
+  overflow-y: auto;
+  padding-right: 2px;
 }
 
 .home-shell .manager-nav-item {
   width: 100%;
   padding: 12px 12px;
-  min-height: 72px;
+  min-height: 64px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.04);
@@ -261,11 +264,24 @@ button {
   display: -webkit-box;
   font-size: 0.74rem;
   line-height: 1.4;
-  min-height: 2.1em;
+  min-height: 2em;
   color: rgba(255, 255, 255, 0.64);
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+.home-shell .manager-sidebar-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.home-shell .manager-sidebar-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.home-shell .manager-sidebar-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
 }
 
 .home-shell .manager-sidebar-footer {
@@ -291,7 +307,7 @@ button {
 }
 
 .home-shell .idol-stage {
-  flex-basis: 32%;
+  flex-basis: 34%;
   flex-shrink: 0;
   padding: 10px 8px;
 }
@@ -313,7 +329,7 @@ button {
 
 .home-shell .idol-stage-ring {
   position: absolute;
-  width: min(92%, 360px);
+  width: min(96%, 390px);
   aspect-ratio: 1;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.18);
@@ -322,8 +338,8 @@ button {
 }
 
 .home-shell .idol-video {
-  width: 92%;
-  max-width: 430px;
+  width: 96%;
+  max-width: 460px;
   z-index: 1;
 }
 
@@ -369,7 +385,7 @@ button {
   gap: 12px;
   min-height: 76px;
   padding: 20px 0 0 0;
-  color: white;
+  color: #ffffff;
 }
 
 .home-shell .chat-category-header > div {
@@ -382,7 +398,7 @@ button {
   line-height: 1.4;
   min-height: 2.8em;
   overflow-wrap: anywhere;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+  text-shadow: 0 1px 6px rgba(70, 63, 56, 0.24);
 }
 
 .home-shell .chat-category-label {
@@ -390,7 +406,7 @@ button {
   font-size: 0.74rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.84);
 }
 
 .home-shell .chat-reset-btn {
@@ -559,7 +575,7 @@ button {
   }
 
   .home-shell .idol-stage {
-    flex-basis: 36%;
+    flex-basis: 38%;
   }
 
   .home-shell .chat-container {

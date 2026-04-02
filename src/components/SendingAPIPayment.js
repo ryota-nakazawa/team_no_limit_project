@@ -23,7 +23,7 @@ export const sendToChatGPTPayment = async (
   ]);
 
   const requestData = {
-    model: "gpt-3.5-turbo",
+    model: "gpt-5.4",
     messages: [
       {
         role: "system",
