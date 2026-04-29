@@ -1,0 +1,99 @@
+# main への push でテストが落ちた時に Codex に原因分析だけをしてもらう。
+# プランの「最初に試すなら」ステップ 2 に対応。
+#
+# このワークフローはコードを書き換えない。原因の説明を commit comment に残す。
+name: codex-analyze-on-test-failure
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # commit comment を残すために必要。
+  issues: write
+
+concurrency:
+  group: codex-analyze-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        id: test
+        continue-on-error: true
+        # CRA (react-scripts test) は watch モードで止まるため CI=true が必須。
+        env:
+          CI: 'true'
+        run: npm test -- --watchAll=false --passWithNoTests 2>&1 | tee /tmp/test-output.log
+
+      - name: Run Codex (analysis only)
+        if: steps.test.outcome == 'failure'
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          # 書き込み禁止。原因の説明だけを生成する。
+          sandbox: read-only
+          prompt: |
+            The test suite failed on branch ${{ github.ref_name }}
+            after commit ${{ github.sha }} in ${{ github.repository }}.
+
+            The full test output is at /tmp/test-output.log. Read it first.
+
+            Investigate the repository and produce a short root-cause analysis:
+              - Which test failed and what is the failing assertion or error?
+              - Which file or function in the source code is most likely responsible?
+              - What is the smallest change that would likely fix it?
+                (Describe it; do NOT actually edit any files.)
+              - Any related risks the maintainer should know about.
+
+            Constraints:
+              - Do NOT modify any files. This step is analysis only.
+              - Keep the report under ~30 lines of Markdown.
+
+            Save the report to /tmp/codex-analysis.md.
+
+      - name: Post analysis as commit comment
+        if: steps.test.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          if [ ! -s /tmp/codex-analysis.md ]; then
+            echo "Codex did not produce an analysis file; skipping comment."
+            exit 0
+          fi
+          {
+            echo "### Codex: test failure analysis"
+            echo
+            cat /tmp/codex-analysis.md
+            echo
+            echo "---"
+            echo "_Posted automatically by \`codex-analyze-on-test-failure\`. This is analysis only — no code changes were made._"
+          } > /tmp/comment.md
+          gh api \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            "repos/${REPO}/commits/${SHA}/comments" \
+            -f body="$(cat /tmp/comment.md)"
+
+      - name: Mark job as failed if tests failed
+        if: steps.test.outcome == 'failure'
+        run: |
+          echo "::error::Tests failed on ${{ github.sha }}. See Codex analysis in commit comments."
+          exit 1
