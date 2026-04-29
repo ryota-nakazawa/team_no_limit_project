@@ -1,0 +1,88 @@
+# PR が作成・更新された時に Codex がレビューコメントを残す。
+# プランの「最初に試すなら」ステップ 1 に対応。
+#
+# 注意:
+# - fork 由来の PR には secrets が渡らないため、`pull_request_target` ではなく
+#   通常の `pull_request` を使い、外部 fork からは Codex を起動しない。
+# - レビューはコメントのみ。リポジトリへの書き込みは行わない（sandbox: read-only）。
+name: codex-review-on-pr
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+# 最小権限。レビュー結果を PR にコメントする用途のみ。
+permissions:
+  contents: read
+  pull-requests: write
+
+# 同一 PR で連投された場合は古い実行をキャンセルする。
+concurrency:
+  group: codex-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # fork からの PR では secrets が空になるため、Codex は起動しない。
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v5
+        with:
+          # 差分を取るため base からの履歴も取得する。
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Run Codex (review only)
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          # 書き込み禁止。レビューコメントを生成するだけ。
+          sandbox: read-only
+          prompt: |
+            You are reviewing pull request #${{ github.event.pull_request.number }}
+            in ${{ github.repository }}.
+
+            Title: ${{ github.event.pull_request.title }}
+            Base: ${{ github.event.pull_request.base.ref }}
+            Head: ${{ github.event.pull_request.head.ref }}
+
+            Look at the diff against the base branch:
+              git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1
+              git diff origin/${{ github.event.pull_request.base.ref }}...HEAD
+
+            Write a concise code review focused on:
+              - Bugs or correctness issues
+              - Obvious security concerns
+              - Tests or edge cases that look missing
+              - Small improvement suggestions
+
+            Constraints:
+              - Do NOT modify any files in the repository.
+              - Be brief. If there is nothing important to flag, say so plainly.
+              - Output the review as Markdown.
+
+            Save the final review to /tmp/codex-review.md.
+
+      - name: Post review as PR comment
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [ ! -s /tmp/codex-review.md ]; then
+            echo "Codex did not produce a review file; skipping comment."
+            exit 0
+          fi
+          {
+            echo "### Codex Review"
+            echo
+            cat /tmp/codex-review.md
+            echo
+            echo "---"
+            echo "_Posted automatically by \`codex-review-on-pr\` (commit \`${{ github.event.pull_request.head.sha }}\`)._"
+          } > /tmp/comment.md
+          gh pr comment "$PR_NUMBER" --repo "$REPO" --body-file /tmp/comment.md
